@@ -39,6 +39,21 @@
             60% { transform: translateY(-5px); }
         }
 
+        /* Letter Animation */
+        .letter-anim {
+            animation: pulse 2s infinite, rainbow 3s infinite;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        @keyframes rainbow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
         .container { min-height: 100vh; padding: 1rem; max-width: 600px; margin: 0 auto; }
         
         /* BANNER */
@@ -88,6 +103,7 @@
         .bg-body { background: #90A4AE; }
         .bg-clothes { background: #FFCCBC; }
         .bg-transports { background: #64B5F6; }
+        .bg-alphabet { background: #A5D6A7; }
         
         /* UI ELEMENTI */
         .btn-back { 
@@ -159,7 +175,9 @@
         body.high-contrast .bg-body { background: #263238 !important; }
         body.high-contrast .bg-clothes { background: #bf360c !important; }
         body.high-contrast .bg-transports { background: #01579b !important; }
+        body.high-contrast .bg-alphabet { background: #1b5e20 !important; }
         body.high-contrast .banner-img { filter: contrast(2) brightness(1.5); border-color: #fff !important; }
+        body.high-contrast .letter-anim { filter: none !important; color: #fff !important; text-shadow: 2px 2px 4px rgba(255,255,255,0.5) !important; }
     </style>
 </head>
 <body>
@@ -214,7 +232,7 @@
                 }
             }, []);
 
-            // DATI RIORGANIZZATI CON CATEGORIA TRANSPORTS AGGIUNTA
+            // DATI RIORGANIZZATI CON CATEGORIA ALPHABET AGGIUNTA
             const data = {
                 numbers: { 
                     name: 'Numbers', 
@@ -278,12 +296,22 @@
                 clothes: { name: 'Clothes', emoji: '👕', bg: 'bg-clothes', items: [
                     {name:'Shirt',emoji:'👕'},{name:'Pants',emoji:'👖'},{name:'Dress',emoji:'👗'},{name:'Hat',emoji:'🎩'},
                     {name:'Shoes',emoji:'👟'},{name:'Socks',emoji:'🧦'},{name:'Jacket',emoji:'🧥'},{name:'Scarf',emoji:'🧣'},
-                    {name:'Tie',emoji:'👔'},{name:'Shorts',emoji:'🩳'},{name:'Cap',emoji:'🧢'},{name:'Gloves',emoji:'🧤'}
+                    {name:'Tie',emoji:'👔'},{name:'Shorts',emoji:'🩳'},{name:'Cap',emoji:'🧢'},{name:'Gloves',emoji:'🧤'},
+                    {name:'Blouse',emoji:'👚'},{name:'Boots',emoji:'🥾'},{name:'Sandals',emoji:'🩴'},{name:'Sunglasses',emoji:'🕶️'}
                 ]},
                 transports: { name: 'Transports', emoji: '🚗', bg: 'bg-transports', items: [
                     {name:'Car',emoji:'🚗'},{name:'Bus',emoji:'🚌'},{name:'Train',emoji:'🚂'},{name:'Airplane',emoji:'✈️'},
                     {name:'Bicycle',emoji:'🚲'},{name:'Boat',emoji:'⛵'},{name:'Motorcycle',emoji:'🏍️'},{name:'Truck',emoji:'🚚'},
                     {name:'Helicopter',emoji:'🚁'},{name:'Scooter',emoji:'🛴'},{name:'Subway',emoji:'🚇'},{name:'Ship',emoji:'🚢'}
+                ]},
+                alphabet: { name: 'Alphabet', emoji: '🔤', bg: 'bg-alphabet', items: [
+                    {name:'A',emoji:'A'},{name:'B',emoji:'B'},{name:'C',emoji:'C'},{name:'D',emoji:'D'},
+                    {name:'E',emoji:'E'},{name:'F',emoji:'F'},{name:'G',emoji:'G'},{name:'H',emoji:'H'},
+                    {name:'I',emoji:'I'},{name:'J',emoji:'J'},{name:'K',emoji:'K'},{name:'L',emoji:'L'},
+                    {name:'M',emoji:'M'},{name:'N',emoji:'N'},{name:'O',emoji:'O'},{name:'P',emoji:'P'},
+                    {name:'Q',emoji:'Q'},{name:'R',emoji:'R'},{name:'S',emoji:'S'},{name:'T',emoji:'T'},
+                    {name:'U',emoji:'U'},{name:'V',emoji:'V'},{name:'W',emoji:'W'},{name:'X',emoji:'X'},
+                    {name:'Y',emoji:'Y'},{name:'Z',emoji:'Z'}
                 ]}
             };
 
@@ -391,9 +419,11 @@
                             <button className="btn btn-big btn-quiz" onClick={() => { setScreen('quiz'); startQuiz(); }}>🎮 Play Quiz</button>
                         </div>
                         <div className="progress-bar" style={{marginTop: '20px'}}>
-                            <p>Progress: {progress[category]?.completed || 0} / {currentItems.length}</p>
-                            <div style={{background: '#f0f0f0', height: '10px', borderRadius: '5px', margin: '10px 0', overflow: 'hidden'}}>
-                                <div className="progress-fill" style={{width: `${((progress[category]?.completed || 0) / currentItems.length) * 100}%`}}></div>
+                            <div style={{background: 'white', padding: '10px', borderRadius: '10px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)'}}>
+                                <p style={{textAlign: 'center', color: '#333', fontWeight: 'bold', margin: '0 0 10px 0'}}>Progress: {progress[category]?.completed || 0} / {currentItems.length}</p>
+                                <div style={{background: '#f0f0f0', height: '10px', borderRadius: '5px', overflow: 'hidden'}}>
+                                    <div className="progress-fill" style={{width: `${((progress[category]?.completed || 0) / currentItems.length) * 100}%`}}></div>
+                                </div>
                             </div>
                         </div>
                         <div className="bunny-mascot">🐰</div>
@@ -408,12 +438,15 @@
                         <button className="btn-back" onClick={() => setScreen('mode')}>⬅️ Back</button>
                         <h2 style={{textAlign:'center', marginBottom:'15px'}}>{data[category].name} {category === 'numbers' ? `(Level ${level})` : ''}</h2>
                         <div className="grid-3">
-                            {currentItems.map((item, i) => (
-                                <button key={i} className="btn btn-item" onClick={() => speak(item.name)}>
-                                    <div style={{fontSize:'2.5rem'}}>{item.emoji}</div>
-                                    <div style={{color:'#555', marginTop:'5px'}}>{item.name}</div>
-                                </button>
-                            ))}
+                            {currentItems.map((item, i) => {
+                                const hue = (i * 360 / currentItems.length);
+                                return (
+                                    <button key={i} className="btn btn-item" onClick={() => speak(item.name)}>
+                                        <div className={category === 'alphabet' ? 'letter-anim' : ''} style={{fontSize: category === 'alphabet' ? '4rem' : '2.5rem', color: category === 'alphabet' ? `hsl(${hue}, 100%, 50%)` : 'inherit'}}>{item.emoji}</div>
+                                        <div style={{color:'#555', marginTop:'5px'}}>{item.name}</div>
+                                    </button>
+                                );
+                            })}
                         </div>
                         <div className="bunny-mascot">🐰</div>
                     </div>
@@ -432,11 +465,14 @@
                         </div>
 
                         <div className="grid-2">
-                            {quiz.options.map((item, i) => (
-                                <button key={i} className="btn btn-item" style={{height:'120px'}} data-item={item.name} onClick={() => checkAnswer(item)}>
-                                    <div style={{fontSize:'3.5rem'}}>{item.emoji}</div>
-                                </button>
-                            ))}
+                            {quiz.options.map((item, i) => {
+                                const hue = (i * 360 / quiz.options.length);
+                                return (
+                                    <button key={i} className="btn btn-item" style={{height:'120px'}} data-item={item.name} onClick={() => checkAnswer(item)}>
+                                        <div className={category === 'alphabet' ? 'letter-anim' : ''} style={{fontSize: category === 'alphabet' ? '5rem' : '3.5rem', color: category === 'alphabet' ? `hsl(${hue}, 100%, 50%)` : 'inherit'}}>{item.emoji}</div>
+                                    </button>
+                                );
+                            })}
                         </div>
                         {celebration && <div className="celebration">{celebration}</div>}
                         <div className="bunny-mascot">🐰</div>

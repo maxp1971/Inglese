@@ -1,185 +1,177 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>English Fun Pro - Duolingo Style</title>
-<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bunny English Adventure</title>
 
 <style>
-:root{
---bg: linear-gradient(135deg,#a5b4fc,#c4b5fd);
---card:#fff;
---text:#333;
---accent:#6366f1;
---shadow:rgba(0,0,0,0.15);
-}
-.dark{
---bg:linear-gradient(135deg,#1e293b,#111827);
---card:#111827;
---text:#f3f4f6;
---accent:#8b5cf6;
---shadow:rgba(0,0,0,0.4);
-}
 body{
-margin:0;
-font-family:Arial, sans-serif;
-background:var(--bg);
-color:var(--text);
+  margin:0;
+  font-family:'Comic Sans MS', cursive;
+  background:linear-gradient(#cdefff,#fdf6ff);
+  text-align:center;
 }
-.container{
-max-width:700px;
-margin:auto;
-padding:1rem;
+
+/* HEADER */
+header{
+  background:#ffe4f2;
+  padding:20px;
+  border-bottom:5px solid #ffd1e8;
 }
-.btn{
-display:block;
-width:100%;
-margin: .5rem 0;
-padding:12px;
-border:none;
-border-radius:10px;
-font-weight:bold;
-background:var(--accent);
-color:white;
-box-shadow:0 4px 8px var(--shadow);
-cursor:pointer;
+
+h1{
+  color:#ff6fb5;
+  margin:0;
 }
-.btn:active{transform:scale(0.97);}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.progress{height:8px;background:#ddd;border-radius:99px;overflow:hidden;margin-top:8px;}
-.fill{height:100%;background:#4ade80;transition:width .4s;}
-.badge{background:gold;color:black;padding:4px 8px;border-radius:12px;display:inline-block;margin:2px;}
+
+.bunny{
+  font-size:70px;
+  animation:bounce 2s infinite;
+}
+
+@keyframes bounce{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-10px);}
+}
+
+.level-select{
+  margin:20px;
+}
+
+.level-btn{
+  padding:12px 20px;
+  margin:5px;
+  border:none;
+  border-radius:20px;
+  background:#ffd6a5;
+  font-size:18px;
+  cursor:pointer;
+}
+
+.world{
+  display:none;
+  margin-top:20px;
+}
+
+.card{
+  display:inline-block;
+  background:white;
+  padding:20px;
+  margin:10px;
+  border-radius:20px;
+  box-shadow:0 5px 10px rgba(0,0,0,0.1);
+  font-size:20px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.card:hover{
+  transform:scale(1.1);
+  background:#f0faff;
+}
+
+.result{
+  font-size:22px;
+  margin-top:15px;
+  color:#ff6fb5;
+}
+
+footer{
+  margin-top:40px;
+  padding:20px;
+  background:#ffe4f2;
+}
 </style>
-
 </head>
+
 <body>
-<div id="root"></div>
 
-<script type="text/babel">
-const {useState,useEffect,useRef} = React;
+<header>
+  <div class="bunny">🐰</div>
+  <h1>Hi! I'm Bunny!</h1>
+  <p>Let's Learn English Together!</p>
+</header>
 
-/* ======== VOCABULARY LIST ======== */
-const vocab = [
- {word:"Mom",emoji:"👩‍🍼",phrase:"My mom cooks dinner"},
- {word:"Dad",emoji:"👨‍🍼",phrase:"My dad drives the car"},
- {word:"Brother",emoji:"👦",phrase:"My brother plays football"},
- {word:"Sister",emoji:"👧",phrase:"My sister reads books"},
- {word:"Teacher",emoji:"👩‍🏫",phrase:"The teacher helps us learn"},
- {word:"Friend",emoji:"🧑‍🤝‍🧑",phrase:"My friend is kind"},
- {word:"Food",emoji:"🍕",phrase:"I like food"},
- {word:"Rain",emoji:"🌧️",phrase:"It is raining today"}
-];
+<div class="level-select">
+  <button class="level-btn" onclick="showLevel('kids')">4-6 years</button>
+  <button class="level-btn" onclick="showLevel('junior')">7-9 years</button>
+  <button class="level-btn" onclick="showLevel('pro')">10-12 years</button>
+</div>
 
-/* ======== UTILS ======== */
-const shuffle=(arr)=>{let a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+<!-- LEVEL 4-6 -->
+<div id="kids" class="world">
+  <h2>👨‍👩‍👧 FAMILY WORLD</h2>
+  <p>Tap the correct word!</p>
 
-/* ======== MAIN APP ======== */
-function App(){
- const [dark,setDark] = useState(false);
- const [screen,setScreen]=useState("menu");
- const [xp,setXp]=useState(()=>parseInt(localStorage.getItem("xp"))||0);
- const [level,setLevel]=useState(()=>parseInt(localStorage.getItem("level"))||1);
- const [energy,setEnergy]=useState(5);
- const [current,setCurrent]=useState(null);
- const [options,setOptions]=useState([]);
- const [input,setInput]=useState("");
- const [message,setMessage]=useState("");
- const audioCtx = useRef(null);
+  <div class="card" onclick="checkAnswer(this,'mom')">👩 Mom</div>
+  <div class="card" onclick="checkAnswer(this,'dad')">👨 Dad</div>
+  <div class="card" onclick="checkAnswer(this,'brother')">👦 Brother</div>
+  <div class="card" onclick="checkAnswer(this,'sister')">👧 Sister</div>
 
- useEffect(()=>{
-   audioCtx.current = new(window.AudioContext||window.webkitAudioContext)();
- },[]);
+  <div id="resultKids" class="result"></div>
+</div>
 
- useEffect(()=>{localStorage.setItem("xp",xp); localStorage.setItem("level",level);},[xp,level]);
+<!-- LEVEL 7-9 -->
+<div id="junior" class="world">
+  <h2>🧠 Match the Word</h2>
+  <p>Who is this? 👩</p>
 
- function speak(text){
-   window.speechSynthesis.cancel();
-   const u=new SpeechSynthesisUtterance(text);
-   u.lang="en-US";
-   window.speechSynthesis.speak(u);
- }
+  <div class="card" onclick="quizJunior('mom')">Mom</div>
+  <div class="card" onclick="quizJunior('dad')">Dad</div>
+  <div class="card" onclick="quizJunior('brother')">Brother</div>
 
- function startLesson(){
-   if(energy<=0){setMessage("Not enough energy! 😴");return;}
-   setEnergy(e=>e-1);
-   const correct = vocab[Math.floor(Math.random()*vocab.length)];
-   const opts = shuffle([correct,...vocab.filter(v=>v.word!==correct.word)]).slice(0,4);
-   setCurrent(correct);
-   setOptions(opts);
-   setInput("");
-   setMessage("");
-   setScreen("quiz");
-   speak(correct.phrase);
- }
+  <div id="resultJunior" class="result"></div>
+</div>
 
- function check(ans){
-   if(!current) return;
-   if(ans.trim().toLowerCase()===current.word.toLowerCase()){
-     setXp(x=>x+10);
-     if(xp+10 >= level*50){
-       setLevel(l=>l+1);
-       setMessage("Level Up! 🎉");
-     } else {
-       setMessage("Correct! 👍");
-     }
-     startLesson();
-   } else {
-     setMessage("Try again! 🙃");
-   }
- }
+<!-- LEVEL 10-12 -->
+<div id="pro" class="world">
+  <h2>✏️ Write the correct word</h2>
+  <p>She is my father's daughter. She is my ______.</p>
 
- return (
- <div className={`container ${dark?"dark":""}`}>
-   <button className="btn" onClick={()=>setDark(d=>!d)}>
-     {dark?"☀️ Light":"🌙 Dark"}
-   </button>
+  <input type="text" id="answerPro" placeholder="Type here">
+  <button class="level-btn" onclick="checkPro()">Check</button>
 
-   {screen==="menu" && <>
-     <h1>English Fun Pro 🚀</h1>
-     <p>XP: {xp} — Level: {level}</p>
-     <div className="progress"><div className="fill" style={{width: (xp%(level*50))/(level*50)*100+"%"}}></div></div>
-     <p>Energy: {energy} 🌟</p>
-     <button className="btn" onClick={startLesson}>Start Lesson</button>
-     <button className="btn" onClick={()=>setScreen("vocab")}>Vocabulary</button>
-   </>}
+  <div id="resultPro" class="result"></div>
+</div>
 
-   {screen==="quiz" && current && <>
-     <button className="btn" onClick={()=>setScreen("menu")}>← Back</button>
-     <h2 className="big">{current.emoji}</h2>
-     <div className="grid2">
-       {options.map(o=>(
-         <button key={o.word} className="btn" onClick={()=>check(o.word)}>{o.word}</button>
-       ))}
-     </div>
-     <input 
-       className="btn"
-       placeholder="Type answer"
-       value={input}
-       onChange={e=>setInput(e.target.value)}
-       onKeyDown={e=>e.key==="Enter"&&check(input)}
-     />
-     <button className="btn" onClick={()=>check(input)}>Submit</button>
-     <button className="btn" onClick={()=>speak(current.phrase)}>🔊 Listen</button>
-     <p>{message}</p>
-   </>}
+<footer>
+  Made with ❤️ by Bunny
+</footer>
 
-   {screen==="vocab" && <>
-     <button className="btn" onClick={()=>setScreen("menu")}>← Back</button>
-     <h2>Vocabulary List</h2>
-     {vocab.map(v=>(
-       <div key={v.word}>
-         {v.emoji} {v.word} — <button onClick={()=>speak(v.word)}>🔊</button>
-       </div>
-     ))}
-   </>}
- </div>
- );
+<script>
+
+function showLevel(level){
+  document.getElementById('kids').style.display='none';
+  document.getElementById('junior').style.display='none';
+  document.getElementById('pro').style.display='none';
+  document.getElementById(level).style.display='block';
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+/* LEVEL 4-6 */
+function checkAnswer(element,word){
+  document.getElementById('resultKids').innerHTML="Great job! ⭐";
+}
+
+/* LEVEL 7-9 */
+function quizJunior(answer){
+  if(answer=="mom"){
+    document.getElementById('resultJunior').innerHTML="Correct! 🎉";
+  } else{
+    document.getElementById('resultJunior').innerHTML="Try again!";
+  }
+}
+
+/* LEVEL 10-12 */
+function checkPro(){
+  let value=document.getElementById('answerPro').value.toLowerCase();
+  if(value=="sister"){
+    document.getElementById('resultPro').innerHTML="Excellent! 🏆";
+  } else{
+    document.getElementById('resultPro').innerHTML="Not correct. Try again!";
+  }
+}
+
 </script>
 
 </body>

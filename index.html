@@ -48,35 +48,35 @@
             height: 100px; 
             width: 100%;
             position: relative;
+            /* MODIFICA: BORDO SPESSO AGGIUNTO */
+            border: 5px solid rgba(255, 255, 255, 0.9); 
         }
         .btn-category .emoji-large { font-size: 2.2rem; margin-bottom: 5px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)); }
         .btn-category .category-name { font-size: 0.75rem; font-weight: 600; line-height: 1.1; }
         
         /* COLORI */
+        .bg-numbers { background: #9575CD; }
+        .bg-colors { background: #FF8A65; }
+        .bg-fruits { background: #FFB74D; }
+        .bg-animals { background: #F06292; }
         .bg-weather { background: #4FC3F7; }
         .bg-food { background: #81C784; }
         .bg-family { background: #FFD54F; color: #d35400; }
-        .bg-animals { background: #F06292; }
-        .bg-colors { background: #FF8A65; }
-        .bg-numbers { background: #9575CD; }
-        .bg-fruits { background: #FFB74D; }
         .bg-months { background: #4DB6AC; }
         .bg-gestures { background: #7986CB; }
         .bg-shapes { background: #BA68C8; }
         .bg-body { background: #90A4AE; }
         
         /* UI ELEMENTI */
-        
-        /* MODIFICA: TASTO BACK PIÙ GRANDE */
         .btn-back { 
             background: white; 
-            padding: 15px 30px; /* Più grande */
+            padding: 15px 30px; 
             border-radius: 50px; 
             box-shadow: 0 6px 15px rgba(0,0,0,0.15); 
             margin-bottom: 20px; 
             color: #333; 
             font-weight: 800; 
-            font-size: 1.4rem; /* Scritta più grande */
+            font-size: 1.4rem;
             border: 3px solid #e0e0e0; 
             display: inline-flex;
             align-items: center;
@@ -111,14 +111,9 @@
 
             useEffect(() => { localStorage.setItem('stars', stars); }, [stars]);
 
-            // DATI COMPLETI
+            // DATI RIORGANIZZATI E ARRICCHITI
             const data = {
-                weather: { name: 'Weather', emoji: '🌤️', bg: 'bg-weather', items: [{name:'Sun',emoji:'☀️'},{name:'Rain',emoji:'🌧️'},{name:'Cloud',emoji:'☁️'},{name:'Snow',emoji:'❄️'}]},
-                food: { name: 'Food', emoji: '🍔', bg: 'bg-food', items: [{name:'Apple',emoji:'🍎'},{name:'Pizza',emoji:'🍕'},{name:'Burger',emoji:'🍔'},{name:'Ice Cream',emoji:'🍦'}]},
-                family: { name: 'Family', emoji: '👨‍👩‍👧', bg: 'bg-family', items: [{name:'Mom',emoji:'👩'},{name:'Dad',emoji:'👨'},{name:'Sister',emoji:'👧'},{name:'Brother',emoji:'👦'}]},
-                animals: { name: 'Animals', emoji: '🐶', bg: 'bg-animals', items: [{name:'Cat',emoji:'🐱'},{name:'Dog',emoji:'🐶'},{name:'Lion',emoji:'🦁'},{name:'Elephant',emoji:'🐘'}]},
-                colors: { name: 'Colors', emoji: '🎨', bg: 'bg-colors', items: [{name:'Red',emoji:'❤️'},{name:'Blue',emoji:'💙'},{name:'Green',emoji:'💚'},{name:'Yellow',emoji:'💛'}]},
-                
+                // 1. NUMERI (1-20)
                 numbers: { 
                     name: 'Numbers', 
                     emoji: '🔢', 
@@ -132,12 +127,37 @@
                         {name:'Nineteen',emoji:'19'},{name:'Twenty',emoji:'20'}
                     ]
                 },
-
-                fruits: { name: 'Fruits', emoji: '🍎', bg: 'bg-fruits', items: [{name:'Banana',emoji:'🍌'},{name:'Grape',emoji:'🍇'},{name:'Orange',emoji:'🍊'},{name:'Cherry',emoji:'🍒'}]},
-                months: { name: 'Months', emoji: '📅', bg: 'bg-months', items: [{name:'Jan',emoji:'❄️'},{name:'Feb',emoji:'❤️'},{name:'Aug',emoji:'☀️'},{name:'Dec',emoji:'🎄'}]},
-                gestures: { name: 'Gestures', emoji: '🤝', bg: 'bg-gestures', items: [{name:'Hi',emoji:'👋'},{name:'Yes',emoji:'👍'},{name:'No',emoji:'👎'},{name:'Clap',emoji:'👏'}]},
-                shapes: { name: 'Shapes', emoji: '⭐', bg: 'bg-shapes', items: [{name:'Circle',emoji:'⭕'},{name:'Square',emoji:'🟦'},{name:'Star',emoji:'⭐'},{name:'Heart',emoji:'❤️'}]},
-                body: { name: 'Body', emoji: '👀', bg: 'bg-body', items: [{name:'Eye',emoji:'👀'},{name:'Ear',emoji:'👂'},{name:'Hand',emoji:'👋'},{name:'Nose',emoji:'👃'}]}
+                // 2. COLORI
+                colors: { name: 'Colors', emoji: '🎨', bg: 'bg-colors', items: [
+                    {name:'Red',emoji:'❤️'},{name:'Blue',emoji:'💙'},{name:'Green',emoji:'💚'},{name:'Yellow',emoji:'💛'},
+                    {name:'Orange',emoji:'🧡'},{name:'Purple',emoji:'💜'},{name:'Pink',emoji:'🩷'},{name:'Black',emoji:'🖤'},
+                    {name:'White',emoji:'🤍'},{name:'Brown',emoji:'🤎'}
+                ]},
+                // 3. FRUTTI (Arricchiti)
+                fruits: { name: 'Fruits', emoji: '🍎', bg: 'bg-fruits', items: [
+                    {name:'Apple',emoji:'🍎'},{name:'Banana',emoji:'🍌'},{name:'Grape',emoji:'🍇'},{name:'Orange',emoji:'🍊'},
+                    {name:'Cherry',emoji:'🍒'},{name:'Strawberry',emoji:'🍓'},{name:'Watermelon',emoji:'🍉'},{name:'Peach',emoji:'🍑'},
+                    {name:'Pineapple',emoji:'🍍'},{name:'Pear',emoji:'🍐'},{name:'Lemon',emoji:'🍋'},{name:'Kiwi',emoji:'🥝'}
+                ]},
+                // 4. ANIMALI (Arricchiti)
+                animals: { name: 'Animals', emoji: '🐶', bg: 'bg-animals', items: [
+                    {name:'Cat',emoji:'🐱'},{name:'Dog',emoji:'🐶'},{name:'Lion',emoji:'🦁'},{name:'Elephant',emoji:'🐘'},
+                    {name:'Monkey',emoji:'🐵'},{name:'Tiger',emoji:'🐯'},{name:'Bear',emoji:'🐻'},{name:'Rabbit',emoji:'🐰'},
+                    {name:'Fox',emoji:'🦊'},{name:'Panda',emoji:'🐼'},{name:'Pig',emoji:'🐷'},{name:'Cow',emoji:'🐮'}
+                ]},
+                
+                // LE ALTRE CATEGORIE
+                months: { name: 'Months', emoji: '📅', bg: 'bg-months', items: [
+                    {name:'January',emoji:'❄️'},{name:'February',emoji:'💘'},{name:'March',emoji:'🌱'},{name:'April',emoji:'🌧️'},
+                    {name:'May',emoji:'🌸'},{name:'June',emoji:'☀️'},{name:'July',emoji:'🏖️'},{name:'August',emoji:'🍦'},
+                    {name:'September',emoji:'🎒'},{name:'October',emoji:'🎃'},{name:'November',emoji:'🍂'},{name:'December',emoji:'🎄'}
+                ]},
+                weather: { name: 'Weather', emoji: '🌤️', bg: 'bg-weather', items: [{name:'Sun',emoji:'☀️'},{name:'Rain',emoji:'🌧️'},{name:'Cloud',emoji:'☁️'},{name:'Snow',emoji:'❄️'},{name:'Wind',emoji:'💨'},{name:'Storm',emoji:'⚡'}]},
+                food: { name: 'Food', emoji: '🍔', bg: 'bg-food', items: [{name:'Apple',emoji:'🍎'},{name:'Pizza',emoji:'🍕'},{name:'Burger',emoji:'🍔'},{name:'Ice Cream',emoji:'🍦'},{name:'Cake',emoji:'🍰'},{name:'Milk',emoji:'🥛'}]},
+                family: { name: 'Family', emoji: '👨‍👩‍👧', bg: 'bg-family', items: [{name:'Mom',emoji:'👩'},{name:'Dad',emoji:'👨'},{name:'Sister',emoji:'👧'},{name:'Brother',emoji:'👦'},{name:'Grandma',emoji:'👵'},{name:'Grandpa',emoji:'👴'}]},
+                gestures: { name: 'Gestures', emoji: '🤝', bg: 'bg-gestures', items: [{name:'Hi',emoji:'👋'},{name:'Yes',emoji:'👍'},{name:'No',emoji:'👎'},{name:'Clap',emoji:'👏'},{name:'Peace',emoji:'✌️'},{name:'Love',emoji:'🤟'}]},
+                shapes: { name: 'Shapes', emoji: '⭐', bg: 'bg-shapes', items: [{name:'Circle',emoji:'⭕'},{name:'Square',emoji:'🟦'},{name:'Star',emoji:'⭐'},{name:'Heart',emoji:'❤️'},{name:'Triangle',emoji:'🔺'},{name:'Diamond',emoji:'💎'}]},
+                body: { name: 'Body', emoji: '👀', bg: 'bg-body', items: [{name:'Eye',emoji:'👀'},{name:'Ear',emoji:'👂'},{name:'Hand',emoji:'👋'},{name:'Nose',emoji:'👃'},{name:'Mouth',emoji:'👄'},{name:'Foot',emoji:'🦶'}]}
             };
 
             const speak = (text) => {

@@ -5,276 +5,252 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Learn English">
-    <title>Learn English - Vocabolario Completo</title>
+    <meta name="apple-mobile-web-app-title" content="Learn English Pro">
+    <title>Learn English - Ultimate Edition</title>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
-        .container { min-height: 100vh; padding: 1.5rem; }
-        .bg-gradient-1 { background: linear-gradient(135deg, #fbcfe8, #e9d5ff, #bfdbfe); }
-        .bg-gradient-2 { background: linear-gradient(135deg, #f3e8ff, #fce7f3); }
-        .bg-gradient-3 { background: linear-gradient(135deg, #dbeafe, #e9d5ff); }
-        .bg-gradient-4 { background: linear-gradient(135deg, #d1fae5, #a7f3d0); }
-        
-        /* Gradients per categorie */
-        .bg-red-yellow-pink { background: linear-gradient(90deg, #f87171, #fcd34d, #f472b6); }
-        .bg-blue-purple { background: linear-gradient(90deg, #60a5fa, #a78bfa, #818cf8); }
-        .bg-green-teal { background: linear-gradient(90deg, #4ade80, #2dd4bf, #22d3ee); }
-        .bg-purple-pink { background: linear-gradient(90deg, #a78bfa, #f472b6, #fb7185); }
-        .bg-yellow-orange { background: linear-gradient(90deg, #fcd34d, #fb923c, #ef4444); }
-        .bg-indigo-blue { background: linear-gradient(90deg, #818cf8, #60a5fa, #22d3ee); }
-        .bg-orange-red { background: linear-gradient(90deg, #fb923c, #f87171, #ef4444); }
-        .bg-cyan-blue { background: linear-gradient(90deg, #22d3ee, #0ea5e9, #2563eb); }
+        :root {
+            --bg-main: linear-gradient(135deg, #fbcfe8, #e9d5ff, #bfdbfe);
+            --card-bg: white;
+            --text-main: #7e22ce;
+            --text-sub: #9333ea;
+            --btn-shadow: rgba(0,0,0,0.1);
+        }
 
-        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; max-width: 42rem; margin: 0 auto; }
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; max-width: 42rem; margin: 0 auto; max-height: calc(100vh - 250px); overflow-y: auto; padding-bottom: 1rem; }
+        .dark-mode {
+            --bg-main: linear-gradient(135deg, #1e1b4b, #312e81, #1e1b4b);
+            --card-bg: #1e293b;
+            --text-main: #e9d5ff;
+            --text-sub: #c084fc;
+            --btn-shadow: rgba(0,0,0,0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: background 0.3s, color 0.3s; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; overflow-x: hidden; -webkit-tap-highlight-color: transparent; background: var(--bg-main); min-height: 100vh; }
+        
+        .container { padding: 1.5rem; max-width: 600px; margin: 0 auto; }
+        
+        /* Gradients Categorie */
+        .bg-weather { background: linear-gradient(90deg, #38bdf8, #818cf8); }
+        .bg-clothes { background: linear-gradient(90deg, #fbbf24, #fb923c); }
+        .bg-food { background: linear-gradient(90deg, #f87171, #f472b6); }
+        .bg-jobs { background: linear-gradient(90deg, #34d399, #2dd4bf); }
+        .bg-numbers { background: linear-gradient(90deg, #a78bfa, #818cf8); }
+
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; max-height: 60vh; overflow-y: auto; padding: 10px; }
         
         .btn { border: none; cursor: pointer; transition: transform 0.2s; font-weight: bold; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .btn:active { transform: scale(0.95); }
-        .btn-category { color: white; padding: 1.5rem 1rem; border-radius: 1.5rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-        .btn-mode { width: 100%; color: white; font-size: 1.875rem; padding: 2rem 1.5rem; border-radius: 1.5rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); margin-bottom: 1.5rem; }
-        .btn-learn { background: linear-gradient(90deg, #60a5fa, #22d3ee); }
-        .btn-quiz { background: linear-gradient(90deg, #4ade80, #10b981); }
-        .btn-item { background: white; padding: 1rem; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); min-height: 110px; gap: 0.5rem; }
-        .btn-quiz-option { background: white; padding: 2rem; border-radius: 1.5rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); min-height: 180px; gap: 0.75rem; }
-        .btn-back { background: white; padding: 0.75rem; border-radius: 9999px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); width: fit-content; margin-bottom: 1.5rem; }
+        .btn-category { color: white; padding: 1.2rem 1rem; border-radius: 1.2rem; box-shadow: 0 4px 6px var(--btn-shadow); }
+        .btn-mode { width: 100%; color: white; font-size: 1.5rem; padding: 1.5rem; border-radius: 1.2rem; margin-bottom: 1rem; }
+        .btn-item { background: var(--card-bg); padding: 0.8rem; border-radius: 1rem; box-shadow: 0 4px 6px var(--btn-shadow); min-height: 90px; color: var(--text-main); }
         
-        .text-center { text-align: center; }
-        .emoji-large { font-size: 2.5rem; margin-bottom: 0.5rem; }
-        .emoji-xlarge { font-size: 4.5rem; }
-        .emoji-huge { font-size: 4.5rem; }
-        .title-main { font-size: 2.5rem; font-weight: bold; color: #7e22ce; margin-bottom: 1rem; animation: bounce 1s infinite; }
-        .title-sub { font-size: 1.25rem; color: #9333ea; margin-bottom: 2rem; }
-        .title-section { font-size: 2rem; font-weight: bold; color: #7e22ce; margin-bottom: 0.5rem; }
+        .theme-toggle { position: absolute; top: 1rem; right: 1rem; background: var(--card-bg); border-radius: 50%; padding: 0.5rem; box-shadow: 0 2px 4px var(--btn-shadow); font-size: 1.2rem; }
         
-        .progress-bar { background: rgba(255, 255, 255, 0.3); border-radius: 9999px; height: 0.4rem; margin-top: 0.5rem; width: 100%; }
-        .progress-fill { background: white; height: 0.4rem; border-radius: 9999px; transition: width 0.5s; }
+        .writing-input { width: 100%; padding: 1rem; border-radius: 1rem; border: 2px solid #7e22ce; font-size: 1.2rem; text-align: center; margin-top: 1rem; outline: none; background: var(--card-bg); color: var(--text-main); }
         
-        .stats-card { background: white; border-radius: 1.5rem; padding: 1.5rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); max-width: 28rem; margin: 2rem auto 0; }
-        .star-count { font-size: 2rem; font-weight: bold; color: #7e22ce; }
-        .badge { background: linear-gradient(90deg, #fcd34d, #fb923c); color: white; font-weight: bold; font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 9999px; margin: 2px; }
+        .title-main { font-size: 2rem; font-weight: bold; color: var(--text-main); margin-bottom: 0.5rem; margin-top: 1.5rem; }
+        .title-sub { font-size: 1rem; color: var(--text-sub); margin-bottom: 1.5rem; }
         
-        .btn-reset { background: #f1f5f9; color: #64748b; font-size: 0.8rem; padding: 0.4rem 0.8rem; border-radius: 9999px; margin-top: 1rem; border: 1px solid #e2e8f0; cursor: pointer; }
-        .btn-reset:hover { background: #fee2e2; color: #ef4444; }
+        .stats-card { background: var(--card-bg); border-radius: 1.2rem; padding: 1rem; margin-top: 1.5rem; color: var(--text-main); box-shadow: 0 4px 10px var(--btn-shadow); }
+        
+        .progress-bar { background: rgba(255, 255, 255, 0.3); border-radius: 99px; height: 6px; width: 100%; margin-top: 8px; }
+        .progress-fill { background: white; height: 100%; border-radius: 99px; transition: width 0.5s; }
 
-        @keyframes bounce { 0%, 100% { transform: translateY(-10%); } 50% { transform: translateY(0); } }
-        .celebration { position: fixed; top: 20%; left: 50%; transform: translateX(-50%); z-index: 1000; animation: bounce 1s infinite; }
-        .celebration-banner { background: #10b981; color: white; padding: 1rem 2rem; border-radius: 9999px; font-weight: bold; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        .celebration { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 100; font-size: 5rem; animation: pop 0.5s ease-out; }
+        @keyframes pop { 0% { transform: translate(-50%, -50%) scale(0); } 100% { transform: translate(-50%, -50%) scale(1); } }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
+        const { useState, useEffect, useRef } = React;
 
         const App = () => {
-            // -- PERSISTENZA DATI --
-            const getInitialProgress = () => {
-                const saved = localStorage.getItem('english_app_progress');
-                return saved ? JSON.parse(saved) : { colors: 0, numbers: 0, animals: 0, shapes: 0, fruits: 0, body: 0, months: 0, gestures: 0 };
-            };
-            const getInitialStars = () => parseInt(localStorage.getItem('english_app_stars')) || 0;
-            const getInitialBadges = () => JSON.parse(localStorage.getItem('english_app_badges')) || [];
-
+            const [isDark, setIsDark] = useState(false);
             const [screen, setScreen] = useState('home');
             const [category, setCategory] = useState(null);
-            const [stars, setStars] = useState(getInitialStars());
-            const [badges, setBadges] = useState(getInitialBadges());
-            const [progress, setProgress] = useState(getInitialProgress());
+            const [stars, setStars] = useState(() => parseInt(localStorage.getItem('stars')) || 0);
+            const [quizMode, setQuizMode] = useState('choice'); // 'choice' or 'writing'
             const [quiz, setQuiz] = useState(null);
-            const [result, setResult] = useState(null);
+            const [userInput, setUserInput] = useState('');
             const [celebration, setCelebration] = useState(null);
 
-            useEffect(() => {
-                localStorage.setItem('english_app_stars', stars);
-                localStorage.setItem('english_app_badges', JSON.stringify(badges));
-                localStorage.setItem('english_app_progress', JSON.stringify(progress));
-            }, [stars, badges, progress]);
+            // Generatore numeri 1-100
+            const generateNumbers = () => {
+                const nums = [];
+                const words = ["Zero","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten",
+                              "Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen","Twenty"];
+                const tens = ["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
+                
+                for(let i=1; i<=100; i++) {
+                    let name = "";
+                    if(i <= 20) name = words[i];
+                    else if(i < 100) {
+                        name = tens[Math.floor(i/10)] + (i%10 !== 0 ? "-" + words[i%10] : "");
+                    } else name = "One Hundred";
+                    nums.push({ name, emoji: i.toString() });
+                }
+                return nums;
+            };
 
             const data = {
-                colors: { name: 'Colors', emoji: '🎨', bg: 'bg-red-yellow-pink', items: [
-                    { name: 'Red', hex: '#EF4444', emoji: '❤️' }, { name: 'Blue', hex: '#3B82F6', emoji: '💙' },
-                    { name: 'Yellow', hex: '#FCD34D', emoji: '⭐' }, { name: 'Green', hex: '#10B981', emoji: '💚' },
-                    { name: 'Purple', hex: '#A855F7', emoji: '💜' }, { name: 'Pink', hex: '#EC4899', emoji: '🩷' }
+                numbers: { name: 'Numbers 1-100', emoji: '🔢', bg: 'bg-numbers', items: generateNumbers() },
+                weather: { name: 'Weather', emoji: '🌤️', bg: 'bg-weather', items: [
+                    {name:'Sun',emoji:'☀️'},{name:'Rain',emoji:'🌧️'},{name:'Cloud',emoji:'☁️'},
+                    {name:'Snow',emoji:'❄️'},{name:'Wind',emoji:'💨'},{name:'Storm',emoji:'⚡'}
                 ]},
-                animals: { name: 'Animals', emoji: '🐾', bg: 'bg-green-teal', items: [
-                    {name:'Cat',emoji:'🐱'},{name:'Dog',emoji:'🐶'},{name:'Lion',emoji:'🦁'},{name:'Elephant',emoji:'🐘'},
-                    {name:'Monkey',emoji:'🐵'},{name:'Panda',emoji:'🐼'},{name:'Giraffe',emoji:'🦒'},{name:'Zebra',emoji:'🦓'}
+                clothes: { name: 'Clothes', emoji: '👕', bg: 'bg-clothes', items: [
+                    {name:'Shirt',emoji:'👕'},{name:'Pants',emoji:'👖'},{name:'Shoes',emoji:'👟'},
+                    {name:'Hat',emoji:'🧢'},{name:'Dress',emoji:'👗'},{name:'Coat',emoji:'🧥'}
                 ]},
-                numbers: { name: 'Numbers', emoji: '🔢', bg: 'bg-blue-purple', items: [
-                    {name:'One',emoji:'1️⃣'},{name:'Two',emoji:'2️⃣'},{name:'Three',emoji:'3️⃣'},{name:'Four',emoji:'4️⃣'},
-                    {name:'Five',emoji:'5️⃣'},{name:'Six',emoji:'6️⃣'},{name:'Seven',emoji:'7️⃣'},{name:'Eight',emoji:'8️⃣'},
-                    {name:'Nine',emoji:'9️⃣'},{name:'Ten',emoji:'🔟'}
+                food: { name: 'Food', emoji: '🍕', bg: 'bg-food', items: [
+                    {name:'Pizza',emoji:'🍕'},{name:'Bread',emoji:'🍞'},{name:'Milk',emoji:'🥛'},
+                    {name:'Apple',emoji:'🍎'},{name:'Egg',emoji:'🥚'},{name:'Cake',emoji:'🍰'}
                 ]},
-                fruits: { name: 'Fruits', emoji: '🍎', bg: 'bg-yellow-orange', items: [
-                    {name:'Apple',emoji:'🍎'},{name:'Banana',emoji:'🍌'},{name:'Orange',emoji:'🍊'},
-                    {name:'Grapes',emoji:'🍇'},{name:'Strawberry',emoji:'🍓'},{name:'Watermelon',emoji:'🍉'}
+                jobs: { name: 'Jobs', emoji: '👨‍⚕️', bg: 'bg-jobs', items: [
+                    {name:'Doctor',emoji:'👨‍⚕️'},{name:'Teacher',emoji:'👩‍🏫'},{name:'Police',emoji:'👮'},
+                    {name:'Chef',emoji:'👨‍🍳'},{name:'Artist',emoji:'🎨'},{name:'Pilot',emoji:'👨‍✈️'}
                 ]},
-                months: { name: 'Months', emoji: '📅', bg: 'bg-orange-red', items: [
-                    {name:'January',emoji:'❄️'},{name:'February',emoji:'❤️'},{name:'March',emoji:'🍃'},
-                    {name:'April',emoji:'🌧️'},{name:'May',emoji:'🌸'},{name:'June',emoji:'☀️'},
-                    {name:'July',emoji:'🏖️'},{name:'August',emoji:'🍦'},{name:'September',emoji:'🎒'},
-                    {name:'October',emoji:'🎃'},{name:'November',emoji:'🍂'},{name:'December',emoji:'🎄'}
-                ]},
-                gestures: { name: 'Gestures', emoji: '🤝', bg: 'bg-cyan-blue', items: [
-                    {name:'Wave',emoji:'👋'},{name:'Thumbs Up',emoji:'👍'},{name:'Thumbs Down',emoji:'👎'},
-                    {name:'Clapping',emoji:'👏'},{name:'Handshake',emoji:'🤝'},{name:'High Five',emoji:'🖐️'}
-                ]},
-                shapes: { name: 'Shapes', emoji: '⭐', bg: 'bg-purple-pink', items: [
-                    {name:'Circle',emoji:'⭕'},{name:'Square',emoji:'🟦'},{name:'Triangle',emoji:'🔺'},
-                    {name:'Star',emoji:'⭐'},{name:'Heart',emoji:'❤️'},{name:'Diamond',emoji:'💎'}
-                ]},
-                body: { name: 'Body Parts', emoji: '👋', bg: 'bg-indigo-blue', items: [
-                    {name:'Eyes',emoji:'👀'},{name:'Nose',emoji:'👃'},{name:'Mouth',emoji:'👄'},
-                    {name:'Ears',emoji:'👂'},{name:'Hands',emoji:'👋'},{name:'Feet',emoji:'🦶'}
+                animals: { name: 'Animals', emoji: '🐾', bg: 'bg-numbers', items: [
+                    {name:'Cat',emoji:'🐱'},{name:'Dog',emoji:'🐶'},{name:'Lion',emoji:'🦁'},{name:'Elephant',emoji:'🐘'}
                 ]}
             };
 
-            const speak = (text) => {
-                if (window.speechSynthesis) {
-                    window.speechSynthesis.cancel();
-                    const u = new SpeechSynthesisUtterance(text);
-                    u.lang = 'en-US';
-                    u.rate = 0.8;
-                    window.speechSynthesis.speak(u);
-                }
-            };
+            useEffect(() => { localStorage.setItem('stars', stars); }, [stars]);
 
-            const addStars = (n, msg) => {
-                const newStars = stars + n;
-                setStars(newStars);
-                if (msg) { setCelebration(msg); setTimeout(() => setCelebration(null), 1500); }
+            const playSound = (type) => {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
                 
-                let newBadges = [...badges];
-                if (newStars >= 1 && !newBadges.includes('First Star')) newBadges.push('First Star');
-                if (newStars >= 50 && !newBadges.includes('Super Learner')) newBadges.push('Super Learner');
-                if (newStars >= 100 && !newBadges.includes('Champion')) newBadges.push('Champion');
-                setBadges(newBadges);
+                if(type === 'correct') {
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+                    osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.1);
+                    gain.gain.fadeOutAtTime = 0.5;
+                } else {
+                    osc.frequency.setValueAtTime(150, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.2);
+                }
+                
+                osc.start();
+                osc.stop(ctx.currentTime + 0.2);
             };
 
-            const startQuiz = () => {
+            const speak = (text) => {
+                window.speechSynthesis.cancel();
+                const u = new SpeechSynthesisUtterance(text);
+                u.lang = 'en-US';
+                window.speechSynthesis.speak(u);
+            };
+
+            const startQuiz = (mode) => {
+                setQuizMode(mode);
                 const items = data[category].items;
                 const correct = items[Math.floor(Math.random() * items.length)];
-                const wrong = items.filter(i => i.name !== correct.name).sort(() => 0.5 - Math.random()).slice(0, 3);
-                setQuiz({ correct, options: [correct, ...wrong].sort(() => 0.5 - Math.random()) });
+                const options = [correct, ...items.filter(i => i.name !== correct.name).sort(() => 0.5 - Math.random()).slice(0, 3)].sort(() => 0.5 - Math.random());
+                setQuiz({ correct, options });
+                setUserInput('');
+                setScreen('quiz');
                 speak(`Find ${correct.name}`);
             };
 
-            const checkAnswer = (item) => {
-                if (item.name === quiz.correct.name) {
-                    setResult('correct');
-                    speak('Correct!');
-                    addStars(2, 'Ottimo lavoro! ⭐');
-                    setProgress(p => ({ ...p, [category]: Math.min(p[category] + 10, 100) }));
-                    setTimeout(() => { setResult(null); startQuiz(); }, 2000);
+            const checkAnswer = (answer) => {
+                if(answer.toLowerCase().trim() === quiz.correct.name.toLowerCase()) {
+                    setStars(s => s + 5);
+                    setCelebration('⭐');
+                    playSound('correct');
+                    setTimeout(() => { setCelebration(null); startQuiz(quizMode); }, 1000);
                 } else {
-                    setResult('wrong');
-                    speak('Try again');
-                    setTimeout(() => setResult(null), 1000);
+                    playSound('wrong');
                 }
             };
 
-            const resetGame = () => {
-                if (confirm("Vuoi davvero cancellare tutti i progressi?")) {
-                    localStorage.clear();
-                    window.location.reload();
-                }
-            };
+            return (
+                <div className={`container ${isDark ? 'dark-mode' : ''}`}>
+                    <button className="theme-toggle" onClick={() => setIsDark(!isDark)}>{isDark ? '☀️' : '🌙'}</button>
 
-            // -- RENDER LOGIC --
-            if (screen === 'home') {
-                return (
-                    <div className="container bg-gradient-1">
+                    {screen === 'home' && (
                         <div className="text-center">
-                            <h1 className="title-main">✨ Learn English! ✨</h1>
-                            <p className="title-sub">Scegli una categoria!</p>
-                        </div>
-                        <div className="grid-2">
-                            {Object.keys(data).map(k => (
-                                <button key={k} className={`btn btn-category ${data[k].bg}`} onClick={() => { setCategory(k); setScreen('mode'); }}>
-                                    <div className="emoji-large">{data[k].emoji}</div>
-                                    <div style={{fontSize: '1rem'}}>{data[k].name}</div>
-                                    <div className="progress-bar">
-                                        <div className="progress-fill" style={{width: `${progress[k]}%`}}></div>
-                                    </div>
-                                </button>
-                            ))}
-                        </div>
-                        <div className="stats-card text-center">
-                            <div className="star-count">⭐ {stars} ⭐</div>
-                            <p style={{fontWeight:'bold', marginTop: '10px'}}>🏆 Badge:</p>
-                            <div style={{marginTop: '5px'}}>
-                                {badges.map(b => <span key={b} className="badge">{b}</span>)}
-                                {badges.length === 0 && <span style={{color: '#94a3b8', fontSize: '0.8rem'}}>Gioca per vincere badge!</span>}
+                            <h1 className="title-main">English Fun Pro 🚀</h1>
+                            <p className="title-sub">Impara e gioca!</p>
+                            <div className="grid-2">
+                                {Object.keys(data).map(k => (
+                                    <button key={k} className={`btn btn-category ${data[k].bg}`} onClick={() => {setCategory(k); setScreen('mode');}}>
+                                        <span style={{fontSize:'2rem'}}>{data[k].emoji}</span>
+                                        <span>{data[k].name}</span>
+                                    </button>
+                                ))}
                             </div>
-                            <button className="btn-reset" onClick={resetGame}>Resetta Progressi 🔄</button>
-                        </div>
-                    </div>
-                );
-            }
-
-            if (screen === 'mode') {
-                return (
-                    <div className="container bg-gradient-2 text-center">
-                        <button className="btn-back" onClick={() => setScreen('home')}>⬅️ Home</button>
-                        <div className="flex-center">
-                            <div className="emoji-xlarge">{data[category].emoji}</div>
-                            <h2 className="title-section">{data[category].name}</h2>
-                            <div className="mode-container" style={{marginTop: '2rem'}}>
-                                <button className="btn btn-mode btn-learn" onClick={() => setScreen('learn')}>📚 Learn</button>
-                                <button className="btn btn-mode btn-quiz" onClick={() => { setScreen('quiz'); startQuiz(); }}>🎮 Quiz</button>
+                            <div className="stats-card">
+                                <h2>Punteggio: ⭐ {stars}</h2>
                             </div>
                         </div>
-                    </div>
-                );
-            }
+                    )}
 
-            if (screen === 'learn') {
-                return (
-                    <div className="container bg-gradient-3">
-                        <button className="btn-back" onClick={() => setScreen('mode')}>⬅️ Back</button>
-                        <h2 className="title-section text-center">{data[category].name}</h2>
-                        <p className="text-center">Tocca per ascoltare</p>
-                        <div className="grid-3" style={{marginTop: '1.5rem'}}>
-                            {data[category].items.map((item, i) => (
-                                <button key={i} className="btn btn-item" onClick={() => { speak(item.name); addStars(1); }}>
-                                    <span style={{fontSize: '2.5rem'}}>{item.emoji}</span>
-                                    <span style={{fontSize: '0.9rem', color: '#7e22ce'}}>{item.name}</span>
-                                    <span style={{fontSize: '0.7rem', color: '#3b82f6'}}>🔊</span>
-                                </button>
-                            ))}
+                    {screen === 'mode' && (
+                        <div className="text-center">
+                            <button className="btn" style={{color: 'var(--text-main)'}} onClick={() => setScreen('home')}>⬅️ Home</button>
+                            <h2 className="title-main">{data[category].name}</h2>
+                            <button className="btn btn-mode bg-weather" onClick={() => setScreen('learn')}>📚 Learn</button>
+                            <button className="btn btn-mode bg-food" onClick={() => startQuiz('choice')}>🎮 Quiz (Easy)</button>
+                            <button className="btn btn-mode bg-jobs" onClick={() => startQuiz('writing')}>✍️ Writing (Hard)</button>
                         </div>
-                    </div>
-                );
-            }
+                    )}
 
-            if (screen === 'quiz' && quiz) {
-                return (
-                    <div className="container bg-gradient-4">
-                        <button className="btn-back" onClick={() => setScreen('mode')}>⬅️ Esci</button>
-                        <div className="quiz-card text-center">
-                            <p className="quiz-prompt">Trova:</p>
-                            <h2 className="quiz-word">{quiz.correct.name}</h2>
-                            <button className="btn-back" style={{margin:'10px auto'}} onClick={() => speak(quiz.correct.name)}>🔊 Ascolta</button>
+                    {screen === 'learn' && (
+                        <div>
+                            <button className="btn" style={{color: 'var(--text-main)'}} onClick={() => setScreen('mode')}>⬅️ Back</button>
+                            <div className="grid-3">
+                                {data[category].items.map((item, i) => (
+                                    <button key={i} className="btn btn-item" onClick={() => speak(item.name)}>
+                                        <span style={{fontSize:'2rem'}}>{item.emoji}</span>
+                                        <span style={{fontSize:'0.8rem'}}>{item.name}</span>
+                                    </button>
+                                ))}
+                            </div>
                         </div>
-                        <div className="grid-2">
-                            {quiz.options.map((item, i) => (
-                                <button key={i} 
-                                    className={`btn btn-quiz-option ${result === 'correct' && item.name === quiz.correct.name ? 'result-correct' : result === 'wrong' && item.name !== quiz.correct.name ? 'result-wrong' : ''}`}
-                                    onClick={() => checkAnswer(item)}
-                                    disabled={result !== null}>
-                                    <span className="emoji-huge">{item.emoji}</span>
-                                </button>
-                            ))}
+                    )}
+
+                    {screen === 'quiz' && quiz && (
+                        <div className="text-center">
+                            <button className="btn" style={{color: 'var(--text-main)'}} onClick={() => setScreen('mode')}>⬅️ Esci</button>
+                            <h2 style={{fontSize:'3rem', color: 'var(--text-main)', margin:'1rem 0'}}>{quiz.correct.emoji}</h2>
+                            
+                            {quizMode === 'choice' ? (
+                                <div className="grid-2">
+                                    {quiz.options.map((opt, i) => (
+                                        <button key={i} className="btn btn-item" style={{fontSize:'1.2rem'}} onClick={() => checkAnswer(opt.name)}>
+                                            {opt.name}
+                                        </button>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div>
+                                    <p style={{color: 'var(--text-main)'}}>Scrivi il nome in inglese:</p>
+                                    <input 
+                                        className="writing-input"
+                                        autoFocus
+                                        value={userInput}
+                                        onChange={(e) => setUserInput(e.target.value)}
+                                        onKeyDown={(e) => e.key === 'Enter' && checkAnswer(userInput)}
+                                    />
+                                    <button className="btn btn-mode bg-jobs" style={{marginTop:'1rem'}} onClick={() => checkAnswer(userInput)}>Invia</button>
+                                </div>
+                            )}
+                            <button className="btn" style={{marginTop:'1rem', color:'#3b82f6'}} onClick={() => speak(quiz.correct.name)}>🔊 Suggerimento</button>
                         </div>
-                        {celebration && <div className="celebration"><div className="celebration-banner">{celebration}</div></div>}
-                    </div>
-                );
-            }
+                    )}
+
+                    {celebration && <div className="celebration">{celebration}</div>}
+                </div>
+            );
         };
 
         const root = ReactDOM.createRoot(document.getElementById('root'));

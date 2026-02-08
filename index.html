@@ -11,7 +11,6 @@
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-        /* FONT SIMPATICO */
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap');
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -22,30 +21,15 @@
         }
         .container { min-height: 100vh; padding: 1rem; max-width: 600px; margin: 0 auto; }
         
-        /* BANNER FATTO CON CODICE (Niente immagini da caricare!) */
-        .hero-banner {
-            background: linear-gradient(180deg, #87CEEB 0%, #E0F7FA 100%);
+        /* STILE PER LA TUA IMMAGINE BANNER */
+        .banner-img {
+            width: 100%;
             border-radius: 1.5rem;
-            padding: 1.5rem;
             margin-bottom: 1.5rem;
-            text-align: center;
             box-shadow: 0 10px 20px -5px rgba(0,150,255,0.3);
-            border: 4px solid #fff;
-            position: relative;
-            overflow: hidden;
+            display: block;
+            border: 4px solid white;
         }
-        
-        /* Nuvole decorative */
-        .cloud { position: absolute; font-size: 3rem; opacity: 0.8; animation: float 6s infinite ease-in-out; }
-        .c1 { top: 10px; left: 10px; animation-delay: 0s; }
-        .c2 { top: 30px; right: 10px; font-size: 2rem; animation-delay: 3s; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-
-        .bunny-avatar { font-size: 5rem; display: block; margin-bottom: 0.5rem; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1)); animation: bounce-soft 2s infinite; }
-        @keyframes bounce-soft { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-
-        .banner-title { font-size: 1.8rem; color: #0066cc; margin-bottom: 0.2rem; text-shadow: 2px 2px 0px #fff; }
-        .banner-subtitle { font-size: 1.1rem; color: #555; background: rgba(255,255,255,0.7); padding: 5px 15px; border-radius: 20px; display: inline-block; }
 
         /* GRIGLIE */
         .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1.5rem; }
@@ -60,7 +44,7 @@
             color: white; 
             padding: 0.8rem 0.2rem; 
             border-radius: 1rem; 
-            box-shadow: 0 5px 0 rgba(0,0,0,0.1); /* Effetto 3D leggero */
+            box-shadow: 0 5px 0 rgba(0,0,0,0.1); 
             height: 100px; 
             width: 100%;
             position: relative;
@@ -68,7 +52,7 @@
         .btn-category .emoji-large { font-size: 2.2rem; margin-bottom: 5px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)); }
         .btn-category .category-name { font-size: 0.75rem; font-weight: 600; line-height: 1.1; }
         
-        /* COLORI VIVACI */
+        /* COLORI */
         .bg-weather { background: #4FC3F7; }
         .bg-food { background: #81C784; }
         .bg-family { background: #FFD54F; color: #d35400; }
@@ -85,17 +69,15 @@
         .btn-back { background: white; padding: 10px 20px; border-radius: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 20px; color: #333; font-weight: bold; font-size: 1rem; border: 2px solid #eee; }
         .stats-card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-top: 20px; text-align: center; }
         
-        /* MODALITÀ GIOCO */
         .mode-card { background: white; padding: 20px; border-radius: 20px; margin-top: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
         .btn-big { width: 100%; font-size: 1.5rem; padding: 20px; border-radius: 15px; margin-bottom: 15px; color: white; box-shadow: 0 6px 0 rgba(0,0,0,0.1); }
         .btn-learn { background: #4FC3F7; }
         .btn-quiz { background: #81C784; }
-
         .btn-item { background: white; padding: 10px; border-radius: 15px; box-shadow: 0 4px 0 #eee; border: 1px solid #f0f0f0; }
+        
         .quiz-word { font-size: 3rem; color: #333; margin: 20px 0; }
         .celebration { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 5rem; animation: pop 0.5s; z-index: 100; pointer-events: none; }
         @keyframes pop { 0% { transform: translate(-50%,-50%) scale(0); } 80% { transform: translate(-50%,-50%) scale(1.2); } 100% { transform: translate(-50%,-50%) scale(1); } }
-
     </style>
 </head>
 <body>
@@ -113,7 +95,6 @@
 
             useEffect(() => { localStorage.setItem('stars', stars); }, [stars]);
 
-            // DATI
             const data = {
                 weather: { name: 'Weather', emoji: '🌤️', bg: 'bg-weather', items: [{name:'Sun',emoji:'☀️'},{name:'Rain',emoji:'🌧️'},{name:'Cloud',emoji:'☁️'},{name:'Snow',emoji:'❄️'}]},
                 food: { name: 'Food', emoji: '🍔', bg: 'bg-food', items: [{name:'Apple',emoji:'🍎'},{name:'Pizza',emoji:'🍕'},{name:'Burger',emoji:'🍔'},{name:'Ice Cream',emoji:'🍦'}]},
@@ -155,18 +136,11 @@
                 }
             };
 
-            // HOME SCREEN
             if (screen === 'home') {
                 return (
                     <div className="container">
-                        {/* IL TUO NUOVO BANNER FATTO IN CODICE */}
-                        <div className="hero-banner">
-                            <div className="cloud c1">☁️</div>
-                            <div className="cloud c2">☁️</div>
-                            <div className="bunny-avatar">🐰</div>
-                            <h1 className="banner-title">Hi! I'm Bunny!</h1>
-                            <div className="banner-subtitle">Let's learn English!</div>
-                        </div>
+                        {/* QUI C'È IL CAMBIAMENTO: Usa la tua foto */}
+                        <img src="banner.png" className="banner-img" alt="Bunny Banner" />
 
                         <div className="grid-4">
                             {Object.keys(data).map(k => (
@@ -184,7 +158,6 @@
                 );
             }
 
-            // MODE SELECTION SCREEN
             if (screen === 'mode') {
                 return (
                     <div className="container" style={{textAlign:'center'}}>
@@ -200,7 +173,6 @@
                 );
             }
 
-            // LEARN SCREEN
             if (screen === 'learn') {
                 return (
                     <div className="container">
@@ -218,7 +190,6 @@
                 );
             }
 
-            // QUIZ SCREEN
             if (screen === 'quiz' && quiz) {
                 return (
                     <div className="container" style={{textAlign:'center'}}>

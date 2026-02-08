@@ -21,7 +21,7 @@
         }
         .container { min-height: 100vh; padding: 1rem; max-width: 600px; margin: 0 auto; }
         
-        /* STILE PER LA TUA IMMAGINE BANNER */
+        /* BANNER */
         .banner-img {
             width: 100%;
             border-radius: 1.5rem;
@@ -66,7 +66,23 @@
         .bg-body { background: #90A4AE; }
         
         /* UI ELEMENTI */
-        .btn-back { background: white; padding: 10px 20px; border-radius: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 20px; color: #333; font-weight: bold; font-size: 1rem; border: 2px solid #eee; }
+        
+        /* MODIFICA: TASTO BACK PIÙ GRANDE */
+        .btn-back { 
+            background: white; 
+            padding: 15px 30px; /* Più grande */
+            border-radius: 50px; 
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15); 
+            margin-bottom: 20px; 
+            color: #333; 
+            font-weight: 800; 
+            font-size: 1.4rem; /* Scritta più grande */
+            border: 3px solid #e0e0e0; 
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         .stats-card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-top: 20px; text-align: center; }
         
         .mode-card { background: white; padding: 20px; border-radius: 20px; margin-top: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
@@ -95,13 +111,28 @@
 
             useEffect(() => { localStorage.setItem('stars', stars); }, [stars]);
 
+            // DATI COMPLETI
             const data = {
                 weather: { name: 'Weather', emoji: '🌤️', bg: 'bg-weather', items: [{name:'Sun',emoji:'☀️'},{name:'Rain',emoji:'🌧️'},{name:'Cloud',emoji:'☁️'},{name:'Snow',emoji:'❄️'}]},
                 food: { name: 'Food', emoji: '🍔', bg: 'bg-food', items: [{name:'Apple',emoji:'🍎'},{name:'Pizza',emoji:'🍕'},{name:'Burger',emoji:'🍔'},{name:'Ice Cream',emoji:'🍦'}]},
                 family: { name: 'Family', emoji: '👨‍👩‍👧', bg: 'bg-family', items: [{name:'Mom',emoji:'👩'},{name:'Dad',emoji:'👨'},{name:'Sister',emoji:'👧'},{name:'Brother',emoji:'👦'}]},
                 animals: { name: 'Animals', emoji: '🐶', bg: 'bg-animals', items: [{name:'Cat',emoji:'🐱'},{name:'Dog',emoji:'🐶'},{name:'Lion',emoji:'🦁'},{name:'Elephant',emoji:'🐘'}]},
                 colors: { name: 'Colors', emoji: '🎨', bg: 'bg-colors', items: [{name:'Red',emoji:'❤️'},{name:'Blue',emoji:'💙'},{name:'Green',emoji:'💚'},{name:'Yellow',emoji:'💛'}]},
-                numbers: { name: 'Numbers', emoji: '🔢', bg: 'bg-numbers', items: [{name:'One',emoji:'1️⃣'},{name:'Two',emoji:'2️⃣'},{name:'Three',emoji:'3️⃣'},{name:'Four',emoji:'4️⃣'}]},
+                
+                numbers: { 
+                    name: 'Numbers', 
+                    emoji: '🔢', 
+                    bg: 'bg-numbers', 
+                    items: [
+                        {name:'One',emoji:'1️⃣'},{name:'Two',emoji:'2️⃣'},{name:'Three',emoji:'3️⃣'},{name:'Four',emoji:'4️⃣'},
+                        {name:'Five',emoji:'5️⃣'},{name:'Six',emoji:'6️⃣'},{name:'Seven',emoji:'7️⃣'},{name:'Eight',emoji:'8️⃣'},
+                        {name:'Nine',emoji:'9️⃣'},{name:'Ten',emoji:'🔟'},
+                        {name:'Eleven',emoji:'11'},{name:'Twelve',emoji:'12'},{name:'Thirteen',emoji:'13'},{name:'Fourteen',emoji:'14'},
+                        {name:'Fifteen',emoji:'15'},{name:'Sixteen',emoji:'16'},{name:'Seventeen',emoji:'17'},{name:'Eighteen',emoji:'18'},
+                        {name:'Nineteen',emoji:'19'},{name:'Twenty',emoji:'20'}
+                    ]
+                },
+
                 fruits: { name: 'Fruits', emoji: '🍎', bg: 'bg-fruits', items: [{name:'Banana',emoji:'🍌'},{name:'Grape',emoji:'🍇'},{name:'Orange',emoji:'🍊'},{name:'Cherry',emoji:'🍒'}]},
                 months: { name: 'Months', emoji: '📅', bg: 'bg-months', items: [{name:'Jan',emoji:'❄️'},{name:'Feb',emoji:'❤️'},{name:'Aug',emoji:'☀️'},{name:'Dec',emoji:'🎄'}]},
                 gestures: { name: 'Gestures', emoji: '🤝', bg: 'bg-gestures', items: [{name:'Hi',emoji:'👋'},{name:'Yes',emoji:'👍'},{name:'No',emoji:'👎'},{name:'Clap',emoji:'👏'}]},
@@ -139,9 +170,7 @@
             if (screen === 'home') {
                 return (
                     <div className="container">
-                        {/* MODIFICA: Ora cerca banner.PNG con le maiuscole */}
                         <img src="banner.PNG" className="banner-img" alt="Bunny Banner" />
-
                         <div className="grid-4">
                             {Object.keys(data).map(k => (
                                 <button key={k} className={`btn btn-category ${data[k].bg}`} onClick={() => { setCategory(k); setScreen('mode'); }}>
@@ -150,7 +179,6 @@
                                 </button>
                             ))}
                         </div>
-
                         <div className="stats-card">
                             <h3>My Stars: ⭐ {stars}</h3>
                         </div>

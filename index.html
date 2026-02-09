@@ -1,284 +1,222 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>English Bunny World</title>
-
-<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<title>Bunny Memory Game</title>
 
 <style>
-:root{
---bg:#fdf4ff;
---card:#ffffff;
---primary:#7c3aed;
---secondary:#f472b6;
---green:#22c55e;
---red:#ef4444;
---soft:#f3f4f6;
-}
-
 body{
-margin:0;
-font-family:'Comic Sans MS','Segoe UI',sans-serif;
-background:linear-gradient(180deg,#ffe4ec,#e0f2ff);
-min-height:100vh;
-}
-
-.container{max-width:700px;margin:auto;padding:20px;}
-
-.header{
+font-family: 'Comic Sans MS', sans-serif;
+background: linear-gradient(135deg,#ffe4f2,#e0f7ff);
 text-align:center;
-margin-bottom:15px;
+margin:0;
+padding:0;
 }
 
-.bunny{
-font-size:60px;
-animation:bounce 1s infinite alternate;
+h1{
+font-size:2.5rem;
+margin-top:20px;
 }
 
-@keyframes bounce{
-from{transform:translateY(0);}
-to{transform:translateY(-8px);}
+.mode-btn{
+padding:10px 20px;
+margin:5px;
+border:none;
+border-radius:20px;
+font-size:1rem;
+cursor:pointer;
+background:#ffb6d9;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:10px;
+max-width:400px;
+margin:20px auto;
 }
 
 .card{
-background:var(--card);
-border-radius:20px;
-padding:20px;
-box-shadow:0 6px 18px rgba(0,0,0,0.1);
-margin-bottom:15px;
-}
-
-button{
-border:none;
-border-radius:18px;
-padding:14px;
-font-size:18px;
+background:white;
+border-radius:15px;
+height:80px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:2rem;
 cursor:pointer;
-font-weight:bold;
-margin:6px 0;
-width:100%;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
 }
 
-.level-btn{
-background:var(--primary);
-color:white;
+.card.flipped{
+background:#fffde7;
 }
 
-.locked{
-background:#ddd;
-color:#999;
+.hidden{
+visibility:hidden;
 }
 
-.option{
-background:var(--soft);
+.bunny{
+font-size:3rem;
+margin-top:10px;
+animation:bounce 2s infinite;
 }
 
-.correct{background:var(--green);color:white;}
-.wrong{background:var(--red);color:white;}
-
-.progress{
-height:10px;
-background:#ddd;
-border-radius:20px;
-overflow:hidden;
-margin-bottom:15px;
+@keyframes bounce{
+0%,100%{transform:translateY(0)}
+50%{transform:translateY(-10px)}
 }
 
-.bar{
-height:100%;
-background:var(--secondary);
-transition:width 0.3s;
-}
-
-.stats{
-text-align:center;
-font-size:18px;
-margin-bottom:10px;
-}
-
-input{
-width:100%;
-padding:12px;
-border-radius:12px;
-border:2px solid var(--primary);
-font-size:18px;
+.score{
+font-size:1.2rem;
 margin-top:10px;
 }
-
 </style>
 </head>
 
 <body>
-<div id="root"></div>
 
-<script type="text/babel">
+<h1>🐰 Bunny Memory</h1>
 
-const {useState,useEffect} = React;
+<div>
+<button class="mode-btn" onclick="setMode('easy')">4-6 👶</button>
+<button class="mode-btn" onclick="setMode('medium')">7-9 👦</button>
+<button class="mode-btn" onclick="setMode('hard')">10-12 🧠</button>
+</div>
 
-const shuffle = arr => [...arr].sort(()=>Math.random()-0.5);
+<div class="score">
+Moves: <span id="moves">0</span> |
+Best: <span id="best">0</span>
+</div>
 
-const today = () => new Date().toDateString();
+<div class="grid" id="grid"></div>
 
-const data = [
-{name:"Animals",items:[
-{name:"Cat",emoji:"🐱"},
-{name:"Dog",emoji:"🐶"},
-{name:"Lion",emoji:"🦁"},
-{name:"Elephant",emoji:"🐘"}
-]},
-{name:"Family",items:[
-{name:"Mom",emoji:"👩"},
-{name:"Dad",emoji:"👨"},
-{name:"Brother",emoji:"👦"},
-{name:"Sister",emoji:"👧"},
-{name:"Grandmother",emoji:"👵"},
-{name:"Grandfather",emoji:"👴"}
-]},
-{name:"Food",items:[
-{name:"Pizza",emoji:"🍕"},
-{name:"Milk",emoji:"🥛"},
-{name:"Apple",emoji:"🍎"},
-{name:"Cake",emoji:"🍰"}
-]}
-];
+<div class="bunny">🐰</div>
 
-function App(){
+<script>
+let mode="easy";
+let firstCard=null;
+let lock=false;
+let moves=0;
+let bestScore=localStorage.getItem("bestScore") || 0;
+document.getElementById("best").innerText=bestScore;
 
-const [level,setLevel]=useState(null);
-const [question,setQuestion]=useState(null);
-const [progress,setProgress]=useState(0);
-const [stars,setStars]=useState(parseInt(localStorage.getItem("stars"))||0);
-const [lives,setLives]=useState(3);
-const [feedback,setFeedback]=useState(null);
-const [streak,setStreak]=useState(parseInt(localStorage.getItem("streak"))||0);
-const [lastDay,setLastDay]=useState(localStorage.getItem("lastDay"));
-const [completed,setCompleted]=useState(JSON.parse(localStorage.getItem("completed"))||[]);
+const data={
+easy:[
+{emoji:"🐶",word:"Dog"},
+{emoji:"🐱",word:"Cat"},
+{emoji:"🍎",word:"Apple"},
+{emoji:"🚗",word:"Car"}
+],
+medium:[
+{emoji:"🐶",word:"Dog"},
+{emoji:"🐱",word:"Cat"},
+{emoji:"🍎",word:"Apple"},
+{emoji:"🚗",word:"Car"}
+],
+hard:[
+{word1:"Dog",word2:"Dog"},
+{word1:"Cat",word2:"Cat"},
+{word1:"Apple",word2:"Apple"},
+{word1:"Car",word2:"Car"}
+]
+};
 
-useEffect(()=>{localStorage.setItem("stars",stars)},[stars]);
-useEffect(()=>{localStorage.setItem("completed",JSON.stringify(completed))},[completed]);
-useEffect(()=>{localStorage.setItem("streak",streak)},[streak]);
-
-useEffect(()=>{
-if(lastDay!==today()){
-if(lastDay){
-setStreak(s=>s+1);
-setStars(s=>s+10);
+function setMode(m){
+mode=m;
+startGame();
 }
-localStorage.setItem("lastDay",today());
-}
-},[]);
 
-const speak=text=>{
-const u=new SpeechSynthesisUtterance(text);
+function speak(text){
+let u=new SpeechSynthesisUtterance(text);
 u.lang="en-US";
 speechSynthesis.speak(u);
-};
+}
 
-const startLevel=(i)=>{
-setLevel(i);
-setProgress(0);
-setLives(3);
-nextQuestion(i,0);
-};
+function startGame(){
+const grid=document.getElementById("grid");
+grid.innerHTML="";
+moves=0;
+document.getElementById("moves").innerText=0;
 
-const nextQuestion=(i,p)=>{
-const items=data[i].items;
-const correct=items[Math.floor(Math.random()*items.length)];
-const options=shuffle([correct,...shuffle(items).slice(0,3)]);
-setQuestion({correct,options});
-setProgress(p);
-setFeedback(null);
-speak(correct.name);
-};
+let cards=[];
 
-const checkAnswer=(ans)=>{
-if(ans===question.correct.name){
-setFeedback("correct");
-setStars(s=>s+5);
+if(mode==="easy"){
+data.easy.forEach(i=>{
+cards.push({content:i.emoji,match:i.word});
+cards.push({content:i.emoji,match:i.word});
+});
+}
+else if(mode==="medium"){
+data.medium.forEach(i=>{
+cards.push({content:i.emoji,match:i.word});
+cards.push({content:i.word,match:i.word});
+});
+}
+else{
+data.hard.forEach(i=>{
+cards.push({content:i.word1,match:i.word1});
+cards.push({content:i.word2,match:i.word2});
+});
+}
+
+cards.sort(()=>0.5-Math.random());
+
+cards.forEach(card=>{
+let div=document.createElement("div");
+div.className="card";
+div.dataset.match=card.match;
+div.dataset.content=card.content;
+div.innerText="❓";
+
+div.onclick=()=>{
+if(lock || div.classList.contains("flipped"))return;
+
+div.innerText=div.dataset.content;
+div.classList.add("flipped");
+speak(div.dataset.match);
+
+if(!firstCard){
+firstCard=div;
+}else{
+lock=true;
+moves++;
+document.getElementById("moves").innerText=moves;
+
+if(firstCard.dataset.match===div.dataset.match){
 setTimeout(()=>{
-if(progress+1>=5){
-setCompleted([...new Set([...completed,level])]);
-alert("Level Complete! 🏆");
-setLevel(null);
-}else{
-nextQuestion(level,progress+1);
+firstCard.classList.add("hidden");
+div.classList.add("hidden");
+firstCard=null;
+lock=false;
+
+if(document.querySelectorAll(".hidden").length===cards.length){
+alert("Great job! 🎉");
+if(bestScore==0 || moves<bestScore){
+localStorage.setItem("bestScore",moves);
 }
-},600);
+}
+},500);
 }else{
-setFeedback("wrong");
-setLives(l=>l-1);
-if(lives-1<=0){
-setTimeout(()=>{alert("Game Over 🥺");setLevel(null)},600);
+setTimeout(()=>{
+firstCard.innerText="❓";
+div.innerText="❓";
+firstCard.classList.remove("flipped");
+div.classList.remove("flipped");
+firstCard=null;
+lock=false;
+},800);
 }
 }
 };
 
-if(level===null)
-return(
-<div className="container">
-<div className="header">
-<div className="bunny">🐰</div>
-<h1 style={{color:"#7c3aed"}}>English Bunny World</h1>
-<div className="stats">⭐ {stars} | 🔥 {streak}</div>
-</div>
-
-{data.map((lvl,i)=>{
-const unlocked = i===0 || completed.includes(i-1);
-return(
-<div key={i} className="card">
-<button
-className={unlocked?"level-btn":"locked"}
-disabled={!unlocked}
-onClick={()=>startLevel(i)}>
-{lvl.name} {completed.includes(i)?"🏆":""}
-</button>
-</div>
-)
-})}
-
-</div>
-);
-
-return(
-<div className="container">
-<div className="card">
-<div className="progress">
-<div className="bar" style={{width:(progress/5*100)+"%"}}></div>
-</div>
-<div style={{textAlign:"center",fontSize:"50px"}}>
-{question.correct.emoji}
-</div>
-
-<div className="stats">❤️ {lives}</div>
-
-{question.options.map((opt,i)=>(
-<button
-key={i}
-className={
-feedback==="correct" && opt.name===question.correct.name ? "correct":
-feedback==="wrong" && opt.name===question.correct.name ? "correct":
-"option"
-}
-onClick={()=>checkAnswer(opt.name)}>
-{opt.name}
-</button>
-))}
-
-<button onClick={()=>speak(question.correct.name)}>
-🔊 Repeat
-</button>
-
-</div>
-</div>
-);
+grid.appendChild(div);
+});
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
-
+startGame();
 </script>
+
 </body>
 </html>

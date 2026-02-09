@@ -1,685 +1,284 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Learn English">
-    <title>Learn English - Bunny Adventure</title>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Bunny World</title>
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: 'Fredoka', 'Comic Sans MS', sans-serif; 
-            background-color: #e6f7ff; 
-            -webkit-tap-highlight-color: transparent; 
-            position: relative;
-            color: #333;
-        }
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-        /* Bunny Mascot Animation */
-        .bunny-mascot {
-            position: fixed;
-            bottom: 40px;
-            right: 20px;
-            font-size: 3rem;
-            animation: bounce 2s infinite;
-            z-index: 50;
-            pointer-events: none;
-            filter: drop-shadow(0 4px 4px rgba(0,0,0,0.1));
-        }
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-10px); }
-            60% { transform: translateY(-5px); }
-        }
+<style>
+:root{
+--bg:#fdf4ff;
+--card:#ffffff;
+--primary:#7c3aed;
+--secondary:#f472b6;
+--green:#22c55e;
+--red:#ef4444;
+--soft:#f3f4f6;
+}
 
-        /* Letter Animation - Reduced motion option */
-        .letter-anim {
-            animation: pulse 2s infinite;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        /* Rainbow animation only if not reduce-motion */
-        @media (prefers-reduced-motion: no-preference) {
-            .letter-anim.rainbow-enabled {
-                animation: pulse 2s infinite, rainbow 3s infinite;
-            }
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-        @keyframes rainbow {
-            0% { filter: hue-rotate(0deg); }
-            100% { filter: hue-rotate(360deg); }
-        }
+body{
+margin:0;
+font-family:'Comic Sans MS','Segoe UI',sans-serif;
+background:linear-gradient(180deg,#ffe4ec,#e0f2ff);
+min-height:100vh;
+}
 
-        .container { min-height: 100vh; padding: 1rem; max-width: 600px; margin: 0 auto; }
-        
-        /* BANNER */
-        .banner-img {
-            width: 100%;
-            border-radius: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 10px 20px -5px rgba(0,150,255,0.3);
-            display: block;
-            border: 4px solid white;
-        }
-        
-        /* Banner placeholder if image fails */
-        .banner-placeholder {
-            width: 100%;
-            height: 150px;
-            border-radius: 1.5rem;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            box-shadow: 0 10px 20px -5px rgba(0,150,255,0.3);
-            border: 4px solid white;
-        }
+.container{max-width:700px;margin:auto;padding:20px;}
 
-        /* GRIGLIE */
-        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1.5rem; }
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding-bottom: 1rem; }
-        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+.header{
+text-align:center;
+margin-bottom:15px;
+}
 
-        /* BOTTONI CATEGORIE */
-        .btn { border: none; cursor: pointer; transition: transform 0.1s, box-shadow 0.2s; font-weight: bold; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 44px; min-width: 44px; }
-        .btn:active { transform: scale(0.95); }
-        .btn:hover { box-shadow: 0 0 20px currentColor; }
-        
-        .btn-category { 
-            color: white; 
-            padding: 0.8rem 0.2rem; 
-            border-radius: 1rem; 
-            box-shadow: 0 5px 0 rgba(0,0,0,0.1); 
-            height: 100px; 
-            width: 100%;
-            position: relative;
-            border: 5px solid rgba(255, 255, 255, 0.9); 
-        }
-        .btn-category .emoji-large { font-size: 2.2rem; margin-bottom: 5px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)); }
-        .btn-category .category-name { font-size: 0.75rem; font-weight: 600; line-height: 1.1; }
-        
-        /* COLORI */
-        .bg-numbers { background: #9575CD; }
-        .bg-colors { background: #FF8A65; }
-        .bg-fruits { background: #FFB74D; }
-        .bg-animals { background: #F06292; }
-        .bg-weather { background: #4FC3F7; }
-        .bg-food { background: #81C784; }
-        .bg-family { background: #FFD54F; color: #d35400; }
-        .bg-months { background: #4DB6AC; }
-        .bg-gestures { background: #7986CB; }
-        .bg-shapes { background: #BA68C8; }
-        .bg-body { background: #90A4AE; }
-        .bg-clothes { background: #FFCCBC; }
-        .bg-transports { background: #64B5F6; }
-        .bg-alphabet { background: #A5D6A7; }
-        
-        /* UI ELEMENTI */
-        .btn-back { 
-            background: white; 
-            padding: 15px 30px; 
-            border-radius: 50px; 
-            box-shadow: 0 6px 15px rgba(0,0,0,0.15); 
-            margin-bottom: 20px; 
-            color: #333; 
-            font-weight: 800; 
-            font-size: 1.4rem;
-            border: 3px solid #e0e0e0; 
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-        }
+.bunny{
+font-size:60px;
+animation:bounce 1s infinite alternate;
+}
 
-        .stats-card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-top: 20px; text-align: center; }
-        .progress-bar { background: #f0f0f0; height: 10px; border-radius: 5px; margin: 10px 0; overflow: hidden; }
-        .progress-fill { background: #4FC3F7; height: 100%; transition: width 0.3s; }
-        
-        .mode-card { background: white; padding: 20px; border-radius: 20px; margin-top: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .btn-big { width: 100%; font-size: 1.5rem; padding: 20px; border-radius: 15px; margin-bottom: 15px; color: white; box-shadow: 0 6px 0 rgba(0,0,0,0.1); }
-        .btn-learn { background: #4FC3F7; }
-        .btn-quiz { background: #81C784; }
-        .btn-reset { background: #FF8A65; font-size: 1rem; padding: 10px; }
-        .btn-item { background: white; padding: 10px; border-radius: 15px; box-shadow: 0 4px 0 #eee; border: 1px solid #f0f0f0; color: #333; }
-        
-        .quiz-word { font-size: 3rem; color: #333; margin: 20px 0; }
-        .celebration { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 5rem; animation: pop 0.5s; z-index: 100; pointer-events: none; }
-        @keyframes pop { 0% { transform: translate(-50%,-50%) scale(0); } 80% { transform: translate(-50%,-50%) scale(1.2); } 100% { transform: translate(-50%,-50%) scale(1); } }
-        
-        .hint { color: #666; font-size: 1.1rem; margin: 10px 0; font-style: italic; }
-        .error-shake { animation: shake 0.5s; }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+@keyframes bounce{
+from{transform:translateY(0);}
+to{transform:translateY(-8px);}
+}
 
-        /* Audio status indicator */
-        .audio-status {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 8px 12px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            z-index: 60;
-        }
+.card{
+background:var(--card);
+border-radius:20px;
+padding:20px;
+box-shadow:0 6px 18px rgba(0,0,0,0.1);
+margin-bottom:15px;
+}
 
-        /* Settings buttons */
-        .settings-btn {
-            margin: 5px;
-            padding: 8px 15px;
-            font-size: 0.85rem;
-            border-radius: 20px;
-            border: 2px solid #ddd;
-            background: white;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .settings-btn.active {
-            background: #4FC3F7;
-            color: white;
-            border-color: #4FC3F7;
-        }
+button{
+border:none;
+border-radius:18px;
+padding:14px;
+font-size:18px;
+cursor:pointer;
+font-weight:bold;
+margin:6px 0;
+width:100%;
+}
 
-        /* Signature */
-        .signature {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            font-size: 0.75rem;
-            color: #999;
-            font-style: italic;
-            z-index: 45;
-            text-align: right;
-        }
+.level-btn{
+background:var(--primary);
+color:white;
+}
 
-        /* High Contrast Mode */
-        body.high-contrast { 
-            background-color: #000 !important; 
-            color: #fff !important; 
-        }
-        body.high-contrast .container { background-color: #000; }
-        body.high-contrast h1, body.high-contrast h2, body.high-contrast h3, body.high-contrast p { color: #fff !important; }
-        body.high-contrast .btn-item { background: #333 !important; color: #fff !important; border-color: #fff !important; }
-        body.high-contrast .stats-card,
-        body.high-contrast .mode-card { background: #333 !important; color: #fff !important; }
-        body.high-contrast .btn-back { background: #555 !important; color: #fff !important; border-color: #777 !important; }
-        body.high-contrast .btn-category { 
-            border-color: rgba(255,255,255,0.9) !important; 
-            color: #fff !important; 
-        }
-        body.high-contrast .btn-category .category-name { color: #fff !important; }
-        body.high-contrast .progress-bar { background: #555 !important; }
-        body.high-contrast .progress-fill { background: #00ffff !important; }
-        body.high-contrast .quiz-word { color: #fff !important; }
-        body.high-contrast .hint { color: #ccc !important; }
-        body.high-contrast .btn-big { background: #555 !important; color: #fff !important; }
-        body.high-contrast .btn-learn { background: #0066cc !important; }
-        body.high-contrast .btn-quiz { background: #006600 !important; }
-        body.high-contrast .btn-reset { background: #cc3300 !important; }
-        body.high-contrast .bg-numbers { background: #4a148c !important; }
-        body.high-contrast .bg-colors { background: #bf360c !important; }
-        body.high-contrast .bg-fruits { background: #e65100 !important; }
-        body.high-contrast .bg-animals { background: #880e4f !important; }
-        body.high-contrast .bg-weather { background: #01579b !important; }
-        body.high-contrast .bg-food { background: #1b5e20 !important; }
-        body.high-contrast .bg-family { background: #ff8f00 !important; color: #fff !important; }
-        body.high-contrast .bg-months { background: #004d40 !important; }
-        body.high-contrast .bg-gestures { background: #1a237e !important; }
-        body.high-contrast .bg-shapes { background: #4a148c !important; }
-        body.high-contrast .bg-body { background: #263238 !important; }
-        body.high-contrast .bg-clothes { background: #bf360c !important; }
-        body.high-contrast .bg-transports { background: #01579b !important; }
-        body.high-contrast .bg-alphabet { background: #1b5e20 !important; }
-        body.high-contrast .banner-placeholder { filter: brightness(0.7); }
-        body.high-contrast .letter-anim { filter: none !important; color: #fff !important; text-shadow: 2px 2px 4px rgba(255,255,255,0.5) !important; }
-        body.high-contrast .audio-status { background: #333 !important; color: #fff !important; }
-        body.high-contrast .settings-btn { background: #333 !important; color: #fff !important; border-color: #666 !important; }
-        body.high-contrast .settings-btn.active { background: #0066cc !important; border-color: #0066cc !important; }
-        body.high-contrast .signature { color: #999 !important; }
-    </style>
+.locked{
+background:#ddd;
+color:#999;
+}
+
+.option{
+background:var(--soft);
+}
+
+.correct{background:var(--green);color:white;}
+.wrong{background:var(--red);color:white;}
+
+.progress{
+height:10px;
+background:#ddd;
+border-radius:20px;
+overflow:hidden;
+margin-bottom:15px;
+}
+
+.bar{
+height:100%;
+background:var(--secondary);
+transition:width 0.3s;
+}
+
+.stats{
+text-align:center;
+font-size:18px;
+margin-bottom:10px;
+}
+
+input{
+width:100%;
+padding:12px;
+border-radius:12px;
+border:2px solid var(--primary);
+font-size:18px;
+margin-top:10px;
+}
+
+</style>
 </head>
+
 <body>
-    <div id="root"></div>
+<div id="root"></div>
 
-    <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
+<script type="text/babel">
 
-        const App = () => {
-            const [screen, setScreen] = useState('home');
-            const [category, setCategory] = useState(null);
-            const [level, setLevel] = useState(1);
-            const [stars, setStars] = useState(0);
-            const [progress, setProgress] = useState({});
-            const [celebration, setCelebration] = useState(null);
-            const [quiz, setQuiz] = useState(null);
-            const [hint, setHint] = useState('');
-            const [highContrast, setHighContrast] = useState(false);
-            const [rainbowEnabled, setRainbowEnabled] = useState(true);
-            const [dailyStreak, setDailyStreak] = useState(0);
-            const [lastPlayed, setLastPlayed] = useState('');
-            const [audioAvailable, setAudioAvailable] = useState(true);
-            const [bannerError, setBannerError] = useState(false);
-            const [attempts, setAttempts] = useState(0);
-            
-            const initRef = useRef(false);
+const {useState,useEffect} = React;
 
-            // Initialize from localStorage once
-            useEffect(() => {
-                if (!initRef.current) {
-                    initRef.current = true;
-                    const savedStars = parseInt(localStorage.getItem('stars')) || 0;
-                    const savedProgress = JSON.parse(localStorage.getItem('progress') || '{}');
-                    const savedStreak = parseInt(localStorage.getItem('dailyStreak')) || 0;
-                    const savedLastPlayed = localStorage.getItem('lastPlayed') || '';
-                    const savedHighContrast = localStorage.getItem('highContrast') === 'true';
-                    const savedRainbow = localStorage.getItem('rainbowEnabled') !== 'false';
-                    
-                    setStars(savedStars);
-                    setProgress(savedProgress);
-                    setDailyStreak(savedStreak);
-                    setLastPlayed(savedLastPlayed);
-                    setHighContrast(savedHighContrast);
-                    setRainbowEnabled(savedRainbow);
-                    
-                    // Check daily streak
-                    const today = new Date().toDateString();
-                    if (savedLastPlayed !== today) {
-                        const newStreak = savedStreak + 1;
-                        setDailyStreak(newStreak);
-                        setLastPlayed(today);
-                        localStorage.setItem('dailyStreak', newStreak);
-                        localStorage.setItem('lastPlayed', today);
-                    }
-                    
-                    // Check audio support
-                    if (!window.speechSynthesis) {
-                        setAudioAvailable(false);
-                    }
-                }
-            }, []);
+const shuffle = arr => [...arr].sort(()=>Math.random()-0.5);
 
-            // Save to localStorage when values change
-            useEffect(() => {
-                if (initRef.current) {
-                    localStorage.setItem('stars', stars);
-                }
-            }, [stars]);
+const today = () => new Date().toDateString();
 
-            useEffect(() => {
-                if (initRef.current) {
-                    localStorage.setItem('progress', JSON.stringify(progress));
-                }
-            }, [progress]);
+const data = [
+{name:"Animals",items:[
+{name:"Cat",emoji:"🐱"},
+{name:"Dog",emoji:"🐶"},
+{name:"Lion",emoji:"🦁"},
+{name:"Elephant",emoji:"🐘"}
+]},
+{name:"Family",items:[
+{name:"Mom",emoji:"👩"},
+{name:"Dad",emoji:"👨"},
+{name:"Brother",emoji:"👦"},
+{name:"Sister",emoji:"👧"},
+{name:"Grandmother",emoji:"👵"},
+{name:"Grandfather",emoji:"👴"}
+]},
+{name:"Food",items:[
+{name:"Pizza",emoji:"🍕"},
+{name:"Milk",emoji:"🥛"},
+{name:"Apple",emoji:"🍎"},
+{name:"Cake",emoji:"🍰"}
+]}
+];
 
-            useEffect(() => {
-                if (initRef.current) {
-                    localStorage.setItem('highContrast', highContrast);
-                    if (highContrast) {
-                        document.body.classList.add('high-contrast');
-                    } else {
-                        document.body.classList.remove('high-contrast');
-                    }
-                }
-            }, [highContrast]);
+function App(){
 
-            useEffect(() => {
-                if (initRef.current) {
-                    localStorage.setItem('rainbowEnabled', rainbowEnabled);
-                }
-            }, [rainbowEnabled]);
+const [level,setLevel]=useState(null);
+const [question,setQuestion]=useState(null);
+const [progress,setProgress]=useState(0);
+const [stars,setStars]=useState(parseInt(localStorage.getItem("stars"))||0);
+const [lives,setLives]=useState(3);
+const [feedback,setFeedback]=useState(null);
+const [streak,setStreak]=useState(parseInt(localStorage.getItem("streak"))||0);
+const [lastDay,setLastDay]=useState(localStorage.getItem("lastDay"));
+const [completed,setCompleted]=useState(JSON.parse(localStorage.getItem("completed"))||[]);
 
-            // DATI
-            const data = {
-                numbers: { 
-                    name: 'Numbers', 
-                    emoji: '🔢', 
-                    bg: 'bg-numbers', 
-                    levels: [
-                        [{name:'One',emoji:'1️⃣'},{name:'Two',emoji:'2️⃣'},{name:'Three',emoji:'3️⃣'},{name:'Four',emoji:'4️⃣'},
-                         {name:'Five',emoji:'5️⃣'},{name:'Six',emoji:'6️⃣'},{name:'Seven',emoji:'7️⃣'},{name:'Eight',emoji:'8️⃣'},
-                         {name:'Nine',emoji:'9️⃣'},{name:'Ten',emoji:'🔟'}],
-                        [{name:'Eleven',emoji:'11'},{name:'Twelve',emoji:'12'},{name:'Thirteen',emoji:'13'},{name:'Fourteen',emoji:'14'},
-                         {name:'Fifteen',emoji:'15'},{name:'Sixteen',emoji:'16'},{name:'Seventeen',emoji:'17'},{name:'Eighteen',emoji:'18'},
-                         {name:'Nineteen',emoji:'19'},{name:'Twenty',emoji:'20'}]
-                    ]
-                },
-                colors: { name: 'Colors', emoji: '🎨', bg: 'bg-colors', items: [
-                    {name:'Red',emoji:'❤️'},{name:'Blue',emoji:'💙'},{name:'Green',emoji:'💚'},{name:'Yellow',emoji:'💛'},
-                    {name:'Orange',emoji:'🧡'},{name:'Purple',emoji:'💜'},{name:'Pink',emoji:'🩷'},{name:'Black',emoji:'🖤'},
-                    {name:'White',emoji:'🤍'},{name:'Brown',emoji:'🤎'}
-                ]},
-                fruits: { name: 'Fruits', emoji: '🍎', bg: 'bg-fruits', items: [
-                    {name:'Apple',emoji:'🍎'},{name:'Banana',emoji:'🍌'},{name:'Grape',emoji:'🍇'},{name:'Orange',emoji:'🍊'},
-                    {name:'Cherry',emoji:'🍒'},{name:'Strawberry',emoji:'🍓'},{name:'Watermelon',emoji:'🍉'},{name:'Peach',emoji:'🍑'},
-                    {name:'Pineapple',emoji:'🍍'},{name:'Pear',emoji:'🍐'},{name:'Lemon',emoji:'🍋'},{name:'Kiwi',emoji:'🥝'}
-                ]},
-                animals: { name: 'Animals', emoji: '🐶', bg: 'bg-animals', items: [
-                    {name:'Cat',emoji:'🐱'},{name:'Dog',emoji:'🐶'},{name:'Lion',emoji:'🦁'},{name:'Elephant',emoji:'🐘'},
-                    {name:'Monkey',emoji:'🐵'},{name:'Tiger',emoji:'🐯'},{name:'Bear',emoji:'🐻'},{name:'Rabbit',emoji:'🐰'},
-                    {name:'Fox',emoji:'🦊'},{name:'Panda',emoji:'🐼'},{name:'Pig',emoji:'🐷'},{name:'Cow',emoji:'🐮'}
-                ]},
-                months: { name: 'Months', emoji: '📅', bg: 'bg-months', items: [
-                    {name:'January',emoji:'❄️'},{name:'February',emoji:'💘'},{name:'March',emoji:'🌱'},{name:'April',emoji:'🌧️'},
-                    {name:'May',emoji:'🌸'},{name:'June',emoji:'☀️'},{name:'July',emoji:'🏖️'},{name:'August',emoji:'🍦'},
-                    {name:'September',emoji:'🎒'},{name:'October',emoji:'🎃'},{name:'November',emoji:'🍂'},{name:'December',emoji:'🎄'}
-                ]},
-                weather: { name: 'Weather', emoji: '🌤️', bg: 'bg-weather', items: [
-                    {name:'Sun',emoji:'☀️'},{name:'Rain',emoji:'🌧️'},{name:'Cloud',emoji:'☁️'},{name:'Snow',emoji:'❄️'},
-                    {name:'Wind',emoji:'💨'},{name:'Storm',emoji:'⚡'}
-                ]},
-                food: { name: 'Food', emoji: '🍔', bg: 'bg-food', items: [
-                    {name:'Apple',emoji:'🍎'},{name:'Pizza',emoji:'🍕'},{name:'Burger',emoji:'🍔'},{name:'Ice Cream',emoji:'🍦'},
-                    {name:'Cake',emoji:'🍰'},{name:'Milk',emoji:'🥛'}
-                ]},
-                family: { name: 'Family', emoji: '👨‍👩‍👧', bg: 'bg-family', items: [
-                    {name:'Mom',emoji:'👩'},{name:'Dad',emoji:'👨'},{name:'Sister',emoji:'👧'},{name:'Brother',emoji:'👦'},
-                    {name:'Grandma',emoji:'👵'},{name:'Grandpa',emoji:'👴'}
-                ]},
-                gestures: { name: 'Gestures', emoji: '🤝', bg: 'bg-gestures', items: [
-                    {name:'Hi',emoji:'👋'},{name:'Yes',emoji:'👍'},{name:'No',emoji:'👎'},{name:'Clap',emoji:'👏'},
-                    {name:'Peace',emoji:'✌️'},{name:'Love',emoji:'🤟'}
-                ]},
-                shapes: { name: 'Shapes', emoji: '⭐', bg: 'bg-shapes', items: [
-                    {name:'Circle',emoji:'⭕'},{name:'Square',emoji:'🟦'},{name:'Star',emoji:'⭐'},{name:'Heart',emoji:'❤️'},
-                    {name:'Triangle',emoji:'🔺'},{name:'Diamond',emoji:'💎'}
-                ]},
-                body: { name: 'Body', emoji: '👀', bg: 'bg-body', items: [
-                    {name:'Eye',emoji:'👀'},{name:'Ear',emoji:'👂'},{name:'Hand',emoji:'👋'},{name:'Nose',emoji:'👃'},
-                    {name:'Mouth',emoji:'👄'},{name:'Foot',emoji:'🦶'}
-                ]},
-                clothes: { name: 'Clothes', emoji: '👕', bg: 'bg-clothes', items: [
-                    {name:'Shirt',emoji:'👕'},{name:'Pants',emoji:'👖'},{name:'Dress',emoji:'👗'},{name:'Hat',emoji:'🎩'},
-                    {name:'Shoes',emoji:'👟'},{name:'Socks',emoji:'🧦'},{name:'Jacket',emoji:'🧥'},{name:'Scarf',emoji:'🧣'},
-                    {name:'Tie',emoji:'👔'},{name:'Shorts',emoji:'🩳'},{name:'Cap',emoji:'🧢'},{name:'Gloves',emoji:'🧤'},
-                    {name:'Blouse',emoji:'👚'},{name:'Boots',emoji:'🥾'},{name:'Sandals',emoji:'🩴'},{name:'Sunglasses',emoji:'🕶️'}
-                ]},
-                transports: { name: 'Transports', emoji: '🚗', bg: 'bg-transports', items: [
-                    {name:'Car',emoji:'🚗'},{name:'Bus',emoji:'🚌'},{name:'Train',emoji:'🚂'},{name:'Airplane',emoji:'✈️'},
-                    {name:'Bicycle',emoji:'🚲'},{name:'Boat',emoji:'⛵'},{name:'Motorcycle',emoji:'🏍️'},{name:'Truck',emoji:'🚚'},
-                    {name:'Helicopter',emoji:'🚁'},{name:'Scooter',emoji:'🛴'},{name:'Subway',emoji:'🚇'},{name:'Ship',emoji:'🚢'}
-                ]},
-                alphabet: { name: 'Alphabet', emoji: '🔤', bg: 'bg-alphabet', items: [
-                    {name:'A',emoji:'A'},{name:'B',emoji:'B'},{name:'C',emoji:'C'},{name:'D',emoji:'D'},
-                    {name:'E',emoji:'E'},{name:'F',emoji:'F'},{name:'G',emoji:'G'},{name:'H',emoji:'H'},
-                    {name:'I',emoji:'I'},{name:'J',emoji:'J'},{name:'K',emoji:'K'},{name:'L',emoji:'L'},
-                    {name:'M',emoji:'M'},{name:'N',emoji:'N'},{name:'O',emoji:'O'},{name:'P',emoji:'P'},
-                    {name:'Q',emoji:'Q'},{name:'R',emoji:'R'},{name:'S',emoji:'S'},{name:'T',emoji:'T'},
-                    {name:'U',emoji:'U'},{name:'V',emoji:'V'},{name:'W',emoji:'W'},{name:'X',emoji:'X'},
-                    {name:'Y',emoji:'Y'},{name:'Z',emoji:'Z'}
-                ]}
-            };
+useEffect(()=>{localStorage.setItem("stars",stars)},[stars]);
+useEffect(()=>{localStorage.setItem("completed",JSON.stringify(completed))},[completed]);
+useEffect(()=>{localStorage.setItem("streak",streak)},[streak]);
 
-            const getCurrentItems = () => {
-                if (category === 'numbers') {
-                    return data.numbers.levels[level - 1] || data.numbers.levels[0];
-                }
-                return data[category]?.items || [];
-            };
+useEffect(()=>{
+if(lastDay!==today()){
+if(lastDay){
+setStreak(s=>s+1);
+setStars(s=>s+10);
+}
+localStorage.setItem("lastDay",today());
+}
+},[]);
 
-            const updateProgress = (cat, completed) => {
-                setProgress(p => ({ ...p, [cat]: { ...p[cat], completed: (p[cat]?.completed || 0) + completed } }));
-            };
+const speak=text=>{
+const u=new SpeechSynthesisUtterance(text);
+u.lang="en-US";
+speechSynthesis.speak(u);
+};
 
-            const speak = (text) => {
-                if (!audioAvailable) return;
-                try {
-                    window.speechSynthesis.cancel();
-                    const u = new SpeechSynthesisUtterance(text);
-                    u.lang = 'en-US'; 
-                    u.rate = 0.9;
-                    window.speechSynthesis.speak(u);
-                } catch (e) {
-                    console.error('Speech error:', e);
-                    setAudioAvailable(false);
-                }
-            };
+const startLevel=(i)=>{
+setLevel(i);
+setProgress(0);
+setLives(3);
+nextQuestion(i,0);
+};
 
-            const startQuiz = () => {
-                const items = getCurrentItems();
-                if (items.length === 0) return;
-                const correct = items[Math.floor(Math.random() * items.length)];
-                const wrong = items.filter(i => i.name !== correct.name).sort(() => 0.5 - Math.random()).slice(0, 3);
-                setQuiz({ correct, options: [correct, ...wrong].sort(() => 0.5 - Math.random()) });
-                setHint('');
-                setAttempts(0);
-                speak(`Find ${correct.name}`);
-            };
+const nextQuestion=(i,p)=>{
+const items=data[i].items;
+const correct=items[Math.floor(Math.random()*items.length)];
+const options=shuffle([correct,...shuffle(items).slice(0,3)]);
+setQuestion({correct,options});
+setProgress(p);
+setFeedback(null);
+speak(correct.name);
+};
 
-            const getHintText = (correctName, attemptCount) => {
-                if (attemptCount === 1) {
-                    return `Hint: It starts with "${correctName.charAt(0)}"`;
-                } else if (attemptCount === 2) {
-                    const halfLength = Math.ceil(correctName.length / 2);
-                    return `Hint: First half is "${correctName.substring(0, halfLength)}"`;
-                } else {
-                    return `Hint: The answer is "${correctName}"`;
-                }
-            };
+const checkAnswer=(ans)=>{
+if(ans===question.correct.name){
+setFeedback("correct");
+setStars(s=>s+5);
+setTimeout(()=>{
+if(progress+1>=5){
+setCompleted([...new Set([...completed,level])]);
+alert("Level Complete! 🏆");
+setLevel(null);
+}else{
+nextQuestion(level,progress+1);
+}
+},600);
+}else{
+setFeedback("wrong");
+setLives(l=>l-1);
+if(lives-1<=0){
+setTimeout(()=>{alert("Game Over 🥺");setLevel(null)},600);
+}
+}
+};
 
-            const checkAnswer = (item) => {
-                if (item.name === quiz.correct.name) {
-                    setStars(s => s + 2);
-                    setCelebration('⭐⭐🎉');
-                    speak('Good job!');
-                    updateProgress(category, 1);
-                    setTimeout(() => { setCelebration(null); startQuiz(); }, 1500);
-                } else {
-                    const newAttempts = attempts + 1;
-                    setAttempts(newAttempts);
-                    setHint(getHintText(quiz.correct.name, newAttempts));
-                    const btn = document.querySelector(`[data-item="${item.name}"]`);
-                    if (btn) btn.classList.add('error-shake');
-                    setTimeout(() => btn?.classList.remove('error-shake'), 500);
-                    
-                    // Better audio feedback - say the correct answer after multiple attempts
-                    if (newAttempts >= 2) {
-                        speak(`The correct answer is ${quiz.correct.name}. Try again!`);
-                    } else {
-                        speak('Try again');
-                    }
-                }
-            };
+if(level===null)
+return(
+<div className="container">
+<div className="header">
+<div className="bunny">🐰</div>
+<h1 style={{color:"#7c3aed"}}>English Bunny World</h1>
+<div className="stats">⭐ {stars} | 🔥 {streak}</div>
+</div>
 
-            const resetProgress = () => {
-                if (window.confirm('Are you sure you want to reset all your progress? This cannot be undone!')) {
-                    localStorage.clear();
-                    setStars(0);
-                    setProgress({});
-                    setDailyStreak(0);
-                    setLastPlayed('');
-                    alert('Progress reset! 🔄');
-                }
-            };
+{data.map((lvl,i)=>{
+const unlocked = i===0 || completed.includes(i-1);
+return(
+<div key={i} className="card">
+<button
+className={unlocked?"level-btn":"locked"}
+disabled={!unlocked}
+onClick={()=>startLevel(i)}>
+{lvl.name} {completed.includes(i)?"🏆":""}
+</button>
+</div>
+)
+})}
 
-            const toggleHighContrast = () => setHighContrast(c => !c);
-            const toggleRainbow = () => setRainbowEnabled(r => !r);
+</div>
+);
 
-            if (screen === 'home') {
-                return (
-                    <div className="container">
-                        {!audioAvailable && (
-                            <div className="audio-status" style={{background: '#ffebee', color: '#c62828'}}>
-                                🔇 Audio unavailable
-                            </div>
-                        )}
-                        
-                        {!bannerError ? (
-                            <img 
-                                src="banner.PNG" 
-                                className="banner-img" 
-                                alt="Bunny Banner" 
-                                loading="lazy"
-                                onError={() => setBannerError(true)}
-                            />
-                        ) : (
-                            <div className="banner-placeholder">
-                                🐰 Learn English 📚
-                            </div>
-                        )}
-                        
-                        <div className="grid-4">
-                            {Object.keys(data).map(k => {
-                                const catProgress = progress[k]?.completed || 0;
-                                const total = data[k].levels ? data[k].levels.flat().length : data[k].items.length;
-                                return (
-                                    <button key={k} className={`btn btn-category ${data[k].bg}`} onClick={() => { setCategory(k); setLevel(1); setScreen('mode'); }}>
-                                        <div className="emoji-large">{data[k].emoji}</div>
-                                        <div className="category-name">{data[k].name}</div>
-                                        {catProgress > 0 && <div className="progress-bar" style={{width: '100%', marginTop: '5px'}}><div className="progress-fill" style={{width: `${(catProgress / total) * 100}%`}}></div></div>}
-                                    </button>
-                                );
-                            })}
-                        </div>
-                        <div className="stats-card">
-                            <h3>My Stars: ⭐ {stars}</h3>
-                            <p>Daily Streak: 🔥 {dailyStreak}</p>
-                            <div style={{marginTop: '15px'}}>
-                                <button 
-                                    className={`settings-btn ${highContrast ? 'active' : ''}`}
-                                    onClick={toggleHighContrast}
-                                >
-                                    {highContrast ? '✓' : ''} High Contrast
-                                </button>
-                                <button 
-                                    className={`settings-btn ${rainbowEnabled ? 'active' : ''}`}
-                                    onClick={toggleRainbow}
-                                >
-                                    {rainbowEnabled ? '✓' : ''} Rainbow Effect
-                                </button>
-                            </div>
-                            <button className="btn btn-big btn-reset" style={{marginTop: '10px'}} onClick={resetProgress}>
-                                🔄 Reset Progress
-                            </button>
-                        </div>
-                        <div className="bunny-mascot">🐰</div>
-                        <div className="signature">by Chloe</div>
-                    </div>
-                );
-            }
+return(
+<div className="container">
+<div className="card">
+<div className="progress">
+<div className="bar" style={{width:(progress/5*100)+"%"}}></div>
+</div>
+<div style={{textAlign:"center",fontSize:"50px"}}>
+{question.correct.emoji}
+</div>
 
-            if (screen === 'mode') {
-                const currentItems = getCurrentItems();
-                return (
-                    <div className="container" style={{textAlign:'center'}}>
-                        <button className="btn-back" onClick={() => setScreen('home')}>⬅️ Back</button>
-                        <h1 style={{fontSize:'3rem', marginBottom:'10px'}}>{data[category].emoji}</h1>
-                        <h2 style={{marginBottom:'20px', color:'#333'}}>{data[category].name}</h2>
-                        {category === 'numbers' && (
-                            <div style={{marginBottom: '20px'}}>
-                                <p>Level: {level} / 2</p>
-                                <button className="btn-big" style={{background: '#9575CD', width: 'auto', padding: '10px 20px'}} onClick={() => setLevel(l => l < 2 ? l + 1 : 1)}>
-                                    {level === 1 ? 'Next Level (11-20)' : 'Previous Level (1-10)'}
-                                </button>
-                            </div>
-                        )}
-                        
-                        <div className="mode-card">
-                            <button className="btn btn-big btn-learn" onClick={() => setScreen('learn')}>📚 Learn Words</button>
-                            <button className="btn btn-big btn-quiz" onClick={() => { setScreen('quiz'); startQuiz(); }}>🎮 Play Quiz</button>
-                        </div>
-                        <div className="progress-bar" style={{marginTop: '20px'}}>
-                            <div style={{background: 'white', padding: '10px', borderRadius: '10px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)'}}>
-                                <p style={{textAlign: 'center', color: '#333', fontWeight: 'bold', margin: '0 0 10px 0'}}>Progress: {progress[category]?.completed || 0} / {currentItems.length}</p>
-                                <div style={{background: '#f0f0f0', height: '10px', borderRadius: '5px', overflow: 'hidden'}}>
-                                    <div className="progress-fill" style={{width: `${((progress[category]?.completed || 0) / currentItems.length) * 100}%`}}></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="bunny-mascot">🐰</div>
-                        <div className="signature">by Chloe</div>
-                    </div>
-                );
-            }
+<div className="stats">❤️ {lives}</div>
 
-            if (screen === 'learn') {
-                const currentItems = getCurrentItems();
-                return (
-                    <div className="container">
-                        <button className="btn-back" onClick={() => setScreen('mode')}>⬅️ Back</button>
-                        <h2 style={{textAlign:'center', marginBottom:'15px'}}>{data[category].name} {category === 'numbers' ? `(Level ${level})` : ''}</h2>
-                        <div className="grid-3">
-                            {currentItems.map((item, i) => {
-                                const hue = (i * 360 / currentItems.length);
-                                const isAlphabet = category === 'alphabet';
-                                return (
-                                    <button key={i} className="btn btn-item" onClick={() => speak(item.name)}>
-                                        <div 
-                                            className={isAlphabet ? `letter-anim ${rainbowEnabled ? 'rainbow-enabled' : ''}` : ''} 
-                                            style={{
-                                                fontSize: isAlphabet ? '4rem' : '2.5rem', 
-                                                color: isAlphabet && !rainbowEnabled ? `hsl(${hue}, 100%, 50%)` : 'inherit'
-                                            }}
-                                        >
-                                            {item.emoji}
-                                        </div>
-                                        <div style={{color:'#555', marginTop:'5px'}}>{item.name}</div>
-                                    </button>
-                                );
-                            })}
-                        </div>
-                        <div className="bunny-mascot">🐰</div>
-                        <div className="signature">by Chloe</div>
-                    </div>
-                );
-            }
+{question.options.map((opt,i)=>(
+<button
+key={i}
+className={
+feedback==="correct" && opt.name===question.correct.name ? "correct":
+feedback==="wrong" && opt.name===question.correct.name ? "correct":
+"option"
+}
+onClick={()=>checkAnswer(opt.name)}>
+{opt.name}
+</button>
+))}
 
-            if (screen === 'quiz' && quiz) {
-                return (
-                    <div className="container" style={{textAlign:'center'}}>
-                        <button className="btn-back" onClick={() => setScreen('mode')}>⬅️ Quit</button>
-                        <div style={{margin:'20px 0'}}>
-                            <p style={{color:'#666', fontSize:'1.2rem'}}>Find the:</p>
-                            <h1 className="quiz-word">{quiz.correct.name}</h1>
-                            <button onClick={() => speak(quiz.correct.name)} style={{background:'none', border:'none', fontSize:'1.2rem', color:'#0066cc', cursor: 'pointer'}}>
-                                🔊 {audioAvailable ? 'Listen' : 'Audio Off'}
-                            </button>
-                            {hint && <p className="hint">{hint}</p>}
-                        </div>
+<button onClick={()=>speak(question.correct.name)}>
+🔊 Repeat
+</button>
 
-                        <div className="grid-2">
-                            {quiz.options.map((item, i) => {
-                                const hue = (i * 360 / quiz.options.length);
-                                const isAlphabet = category === 'alphabet';
-                                return (
-                                    <button key={i} className="btn btn-item" style={{height:'120px'}} data-item={item.name} onClick={() => checkAnswer(item)}>
-                                        <div 
-                                            className={isAlphabet ? `letter-anim ${rainbowEnabled ? 'rainbow-enabled' : ''}` : ''} 
-                                            style={{
-                                                fontSize: isAlphabet ? '5rem' : '3.5rem', 
-                                                color: isAlphabet && !rainbowEnabled ? `hsl(${hue}, 100%, 50%)` : 'inherit'
-                                            }}
-                                        >
-                                            {item.emoji}
-                                        </div>
-                                    </button>
-                                );
-                            })}
-                        </div>
-                        {celebration && <div className="celebration">{celebration}</div>}
-                        <div className="bunny-mascot">🐰</div>
-                        <div className="signature">by Chloe</div>
-                    </div>
-                );
-            }
+</div>
+</div>
+);
+}
 
-            return <div className="container"><h1>Loading...</h1></div>;
-        };
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
+</script>
 </body>
 </html>
